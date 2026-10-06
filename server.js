@@ -138,6 +138,10 @@ async function route(req, res) {
     if (img) return serveImage(res, +img[1]);
     if (p === '/api/content') return send(res, 200, await getContent());
     if (p === '/api/me') return send(res, 200, await requireUser(req));
+    if (p === '/api/default-content') {
+      await requireUser(req);
+      return send(res, 200, JSON.parse(page('content.json')));
+    }
     if (p === '/api/users') {
       await requireUser(req);
       const { rows } = await db.pool.query('SELECT id, username, created_at FROM users ORDER BY id');

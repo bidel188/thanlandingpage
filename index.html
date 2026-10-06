@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -61,7 +61,7 @@ section { padding-block: 112px; }
 .hero { position: relative; min-height: min(88vh, 860px); display: flex; align-items: flex-end; padding-block: 96px; background: #222 center/cover no-repeat; color: #fff; }
 .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.6) 100%); }
 .hero .container { position: relative; width: 100%; }
-.hero h1 { color: #fff; max-width: 14ch; }
+.hero h1 { color: #fff; max-width: 20ch; }
 .hero p { margin-top: 20px; max-width: 560px; font-size: 20px; color: rgba(255,255,255,.88); }
 .hero .btn { margin-top: 36px; }
 
@@ -234,7 +234,7 @@ function render(c) {
       <nav class="nav">${(h.nav || []).map((n, i) => `<a href="${esc(n.href)}"${ed(`header.nav.${i}.label`)}>${esc(n.label)}</a>`).join('')}</nav>
       <div class="header-right">
         ${h.ctaLabel ? `<a class="btn btn-accent" href="${esc(h.ctaHref)}"${ed('header.ctaLabel')}>${esc(h.ctaLabel)} ${arrow}</a>` : ''}
-        <button class="burger" aria-label="Menu" onclick="this.closest('.header').classList.toggle('open')">${svg('menu')}</button>
+        <button class="burger" aria-label="Mở menu" onclick="this.closest('.header').classList.toggle('open')">${svg('menu')}</button>
       </div>
     </div>
   </header>

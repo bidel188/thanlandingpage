@@ -97,6 +97,9 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.err { background: #b91c1c; }
 
+.reset { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); display: grid; gap: 6px; }
+.reset small { color: var(--muted); font-size: 12px; }
+
 /* Tài khoản */
 [hidden] { display: none !important; }
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: grid; place-items: center; z-index: 90; padding: 16px; }
@@ -296,7 +299,9 @@ function renderForm() {
         <div class="sec-h" data-open="${s.key}"><span class="chev">▶</span><b>${s.title}<small>${s.hint}</small></b>${hidden ? '<span class="badge">Đang ẩn</span>' : ''}</div>
         <div class="sec-b">${s.fields.map((f) => field(f, s.key)).join('')}</div>
       </div>`;
-    }).join('');
+    }).join('') +
+    `<div class="reset"><button type="button" class="tbtn" data-reset="1">↺ Nạp nội dung mặc định</button>
+      <small>Thay toàn bộ nội dung đang sửa bằng bản mặc định trong <code>content.json</code>. Chỉ áp dụng lên web khi bấm Lưu; bấm Hoàn tác nếu nhầm.</small></div>`;
   side.scrollTop = top;
 }
 
@@ -448,6 +453,12 @@ side.addEventListener('click', (e) => {
     e.preventDefault(); pickFile(d.upload);
   } else if (d.icon) {
     structural(() => set(d.pathIcon, d.icon));
+  } else if (d.reset) {
+    // Bấm 2 lần để xác nhận
+    if (!t.classList.contains('confirm')) { t.classList.add('confirm'); t.textContent = 'Bấm lần nữa để thay toàn bộ nội dung'; return; }
+    api('GET', '/api/default-content')
+      .then((def) => { structural(() => { content = def; }); toast('Đã nạp nội dung mặc định — xem preview rồi bấm Lưu'); })
+      .catch((err) => toast('Không nạp được: ' + err.message, true));
   }
 });
 const blank = (fields) => Object.fromEntries(fields.map((f) => [f.k, f.t === 'list' ? [] : f.t === 'icon' ? 'star' : '']));

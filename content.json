@@ -6,205 +6,205 @@
     "soft": "#F9F9F9"
   },
   "seo": {
-    "title": "Coconut Shell Activated Carbon Manufacturer | Ivar Carbons",
-    "description": "Premium coconut shell activated carbon for water treatment, air purification, gold recovery, oil & gas, and food processing."
+    "title": "Nhà sản xuất than hoạt tính gáo dừa | Ivar Carbons",
+    "description": "Than hoạt tính gáo dừa cao cấp cho xử lý nước, lọc không khí, thu hồi vàng, dầu khí và chế biến thực phẩm. Tùy chỉnh theo yêu cầu, chất lượng ổn định, cung ứng toàn cầu."
   },
   "header": {
     "logo": "https://framerusercontent.com/images/CcJahzA47kzLDKZzrCkVemqdxs.png",
     "nav": [
-      { "label": "Our Approach", "href": "#usp" },
-      { "label": "Products", "href": "#banner" },
-      { "label": "Industries & Applications", "href": "#industries" },
-      { "label": "Capabilities", "href": "#capabilities" },
-      { "label": "Company", "href": "#footer" },
-      { "label": "Contact Us", "href": "#footer" }
+      { "label": "Phương pháp", "href": "#usp" },
+      { "label": "Sản phẩm", "href": "#banner" },
+      { "label": "Ngành ứng dụng", "href": "#industries" },
+      { "label": "Năng lực", "href": "#capabilities" },
+      { "label": "Công ty", "href": "#footer" },
+      { "label": "Liên hệ", "href": "#footer" }
     ],
-    "ctaLabel": "Enquiry",
+    "ctaLabel": "Yêu cầu báo giá",
     "ctaHref": "#footer"
   },
   "hero": {
     "hidden": false,
     "image": "https://framerusercontent.com/images/bgCD0bbEodTVgS29gYRWOiv4Ec.png",
-    "title": "Coconut Shell\nCarbon Solutions",
+    "title": "Giải pháp than hoạt tính\ntừ gáo dừa",
     "subtitle": "",
-    "buttonLabel": "Explore Our Products",
+    "buttonLabel": "Khám phá sản phẩm",
     "buttonHref": "#industries"
   },
   "usp": {
     "hidden": false,
-    "title": "Our Edge in\nActivated Carbon Manufacturing",
-    "buttonLabel": "Our Approach",
+    "title": "Lợi thế của chúng tôi trong\nsản xuất than hoạt tính",
+    "buttonLabel": "Phương pháp của chúng tôi",
     "buttonHref": "#capabilities",
     "items": [
-      { "icon": "users", "title": "Customer-Centric Solutions", "text": "Advanced customisation to meet evolving customer needs across applications and markets." },
-      { "icon": "truck", "title": "Supply Chain", "text": "Our strong sourcing and production capacity ensure consistent pricing, and operational continuity." },
-      { "icon": "factory", "title": "Manufacturing Competency", "text": "Our carbons are engineered to deliver consistent porosity, hardness, and purity across every batch." }
+      { "icon": "users", "title": "Lấy khách hàng làm trung tâm", "text": "Tùy chỉnh chuyên sâu, đáp ứng nhu cầu luôn thay đổi của khách hàng ở mọi ứng dụng và thị trường." },
+      { "icon": "truck", "title": "Chuỗi cung ứng", "text": "Nguồn nguyên liệu vững chắc và công suất lớn giúp giá cả ổn định, vận hành liên tục." },
+      { "icon": "factory", "title": "Năng lực sản xuất", "text": "Than được thiết kế để đạt độ xốp, độ cứng và độ tinh khiết đồng đều trong từng lô hàng." }
     ],
     "stats": [
-      { "value": "8000", "unit": "TPA", "label": "Manufacturing Capacity" },
-      { "value": "12000", "unit": "TPA", "label": "Scalable Capacity" },
-      { "value": "5+", "unit": "Industries", "label": "Global Expertise" }
+      { "value": "8000", "unit": "tấn/năm", "label": "Công suất sản xuất" },
+      { "value": "12000", "unit": "tấn/năm", "label": "Công suất mở rộng" },
+      { "value": "5+", "unit": "ngành", "label": "Kinh nghiệm toàn cầu" }
     ]
   },
   "industries": {
     "hidden": false,
-    "title": "Activated Carbon for Key Industrial Applications",
+    "title": "Than hoạt tính cho các ngành công nghiệp trọng điểm",
     "tabs": [
       {
-        "name": "Water Treatment",
+        "name": "Xử lý nước",
         "image": "https://framerusercontent.com/images/CfpScewroJ7KbojM9AwQgwqZZk.png",
-        "heading": "Clean Water, Powered by Better Carbon.",
-        "text": "High-efficiency activated carbon for water treatment that strips organics and chlorine with ease. Perfect for municipal and industrial polishing.",
+        "heading": "Nước sạch hơn nhờ than tốt hơn.",
+        "text": "Than hoạt tính hiệu suất cao cho xử lý nước, loại bỏ chất hữu cơ và clo dễ dàng. Lý tưởng cho khâu lọc tinh nước sinh hoạt và nước công nghiệp.",
         "features": [
-          { "text": "Drinking water purification" },
-          { "text": "Industrial wastewater treatment" },
-          { "text": "Contaminants and COD reduction" }
+          { "text": "Lọc nước uống" },
+          { "text": "Xử lý nước thải công nghiệp" },
+          { "text": "Giảm chất ô nhiễm và COD" }
         ],
         "products": "IvarCarb™ Core",
-        "button1": "Explore Details",
+        "button1": "Xem chi tiết",
         "button1Href": "#",
-        "button2": "All Products",
+        "button2": "Tất cả sản phẩm",
         "button2Href": "#"
       },
       {
-        "name": "Air & Gas Purification",
+        "name": "Lọc khí & không khí",
         "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
-        "heading": "Cleaner Air Through Engineered Adsorption.",
-        "text": "High-activity carbon that captures VOCs, odours and harmful gases for industrial and indoor air applications.",
+        "heading": "Không khí sạch hơn nhờ hấp phụ chuyên sâu.",
+        "text": "Than hoạt tính cao giữ lại VOC, mùi và khí độc hại cho các ứng dụng lọc khí công nghiệp và trong nhà.",
         "features": [
-          { "text": "VOC and odour removal" },
-          { "text": "Solvent recovery" },
-          { "text": "Respirator and HVAC filters" }
+          { "text": "Khử VOC và mùi" },
+          { "text": "Thu hồi dung môi" },
+          { "text": "Mặt nạ phòng độc và bộ lọc HVAC" }
         ],
         "products": "IvarCarb™ Air",
-        "button1": "Explore Details",
+        "button1": "Xem chi tiết",
         "button1Href": "#",
-        "button2": "All Products",
+        "button2": "Tất cả sản phẩm",
         "button2Href": "#"
       },
       {
-        "name": "Oil & Gas",
+        "name": "Dầu khí",
         "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
-        "heading": "Purity for Demanding Process Streams.",
-        "text": "Robust carbon grades for removing mercury, sulphur compounds and hydrocarbons from process gas and liquids.",
+        "heading": "Độ tinh khiết cho dòng quy trình khắt khe.",
+        "text": "Các dòng than bền bỉ giúp loại bỏ thủy ngân, hợp chất lưu huỳnh và hydrocarbon khỏi khí và chất lỏng trong quy trình.",
         "features": [
-          { "text": "Amine purification" },
-          { "text": "Mercury and H₂S removal" },
-          { "text": "Condensate polishing" }
+          { "text": "Làm sạch dung dịch amine" },
+          { "text": "Loại bỏ thủy ngân và H₂S" },
+          { "text": "Lọc tinh condensate" }
         ],
         "products": "IvarCarb™ Process",
-        "button1": "Explore Details",
+        "button1": "Xem chi tiết",
         "button1Href": "#",
-        "button2": "All Products",
+        "button2": "Tất cả sản phẩm",
         "button2Href": "#"
       },
       {
-        "name": "Gold Mining",
+        "name": "Khai thác vàng",
         "image": "https://framerusercontent.com/images/bgCD0bbEodTVgS29gYRWOiv4Ec.png",
-        "heading": "Maximise Gold Recovery.",
-        "text": "Hard, abrasion-resistant carbon with fast loading kinetics for CIP, CIL and heap-leach circuits.",
+        "heading": "Tối đa hóa thu hồi vàng.",
+        "text": "Than cứng, chống mài mòn, hấp phụ nhanh cho các hệ thống CIP, CIL và ngâm chiết đống.",
         "features": [
-          { "text": "Carbon-in-pulp (CIP)" },
-          { "text": "Carbon-in-leach (CIL)" },
-          { "text": "Heap leach recovery" }
+          { "text": "Hấp phụ vàng trong bùn (CIP)" },
+          { "text": "Hấp phụ vàng trong quá trình ngâm chiết (CIL)" },
+          { "text": "Thu hồi từ ngâm chiết đống" }
         ],
         "products": "IvarCarb™ Gold",
-        "button1": "Explore Details",
+        "button1": "Xem chi tiết",
         "button1Href": "#",
-        "button2": "All Products",
+        "button2": "Tất cả sản phẩm",
         "button2Href": "#"
       },
       {
-        "name": "Food & Beverages",
+        "name": "Thực phẩm & đồ uống",
         "image": "https://framerusercontent.com/images/CfpScewroJ7KbojM9AwQgwqZZk.png",
-        "heading": "Food-Grade Purity, Batch After Batch.",
-        "text": "Low-ash, high-purity carbon for decolourisation, deodorisation and purification of food and beverage products.",
+        "heading": "Tinh khiết chuẩn thực phẩm, lô nào cũng như lô nào.",
+        "text": "Than ít tro, độ tinh khiết cao để khử màu, khử mùi và làm sạch thực phẩm, đồ uống.",
         "features": [
-          { "text": "Sugar and syrup decolourisation" },
-          { "text": "Edible oil purification" },
-          { "text": "Beverage and water polishing" }
+          { "text": "Khử màu đường và siro" },
+          { "text": "Tinh lọc dầu ăn" },
+          { "text": "Lọc tinh đồ uống và nước" }
         ],
         "products": "IvarCarb™ Pure",
-        "button1": "Explore Details",
+        "button1": "Xem chi tiết",
         "button1Href": "#",
-        "button2": "All Products",
+        "button2": "Tất cả sản phẩm",
         "button2Href": "#"
       }
     ]
   },
   "capabilities": {
     "hidden": false,
-    "title": "Reliability Built on our Capabilities",
+    "title": "Độ tin cậy xây dựng trên năng lực",
     "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
     "cards": [
-      { "icon": "flask", "title": "Carbon Engineering", "text": "A comprehensive portfolio of activated carbon grades tailored to specific applications.", "linkLabel": "Read More", "href": "#" },
-      { "icon": "truck", "title": "Integrated Logistics", "text": "End-to-end control from sourcing to delivery for consistent supply and reliable fulfilment.", "linkLabel": "Read More", "href": "#" },
-      { "icon": "grid", "title": "Controlled Uniformity", "text": "Consistent CTC activity and porosity engineered for reliable adsorption performance.", "linkLabel": "Read More", "href": "#" },
-      { "icon": "factory", "title": "Research & Manufacturing", "text": "Contract-developed activated carbon solutions aligned to your exact application needs.", "linkLabel": "Read More", "href": "#" }
+      { "icon": "flask", "title": "Kỹ thuật than", "text": "Danh mục đầy đủ các dòng than hoạt tính được thiết kế riêng cho từng ứng dụng.", "linkLabel": "Xem thêm", "href": "#" },
+      { "icon": "truck", "title": "Logistics tích hợp", "text": "Kiểm soát trọn vẹn từ nguồn nguyên liệu đến giao hàng, đảm bảo cung ứng ổn định và đúng hẹn.", "linkLabel": "Xem thêm", "href": "#" },
+      { "icon": "grid", "title": "Đồng nhất có kiểm soát", "text": "Chỉ số CTC và độ xốp ổn định, mang lại hiệu suất hấp phụ đáng tin cậy.", "linkLabel": "Xem thêm", "href": "#" },
+      { "icon": "factory", "title": "Nghiên cứu & sản xuất", "text": "Phát triển than hoạt tính theo hợp đồng, đáp ứng chính xác nhu cầu ứng dụng của bạn.", "linkLabel": "Xem thêm", "href": "#" }
     ]
   },
   "banner": {
     "hidden": false,
-    "title": "Find the Right Carbon for Every Application",
-    "text": "Download the complete catalogue to explore all activated carbon grades, technical specifications, and recommended applications in one document.",
-    "buttonLabel": "Download All Product Data Sheet",
+    "title": "Tìm đúng loại than cho mọi ứng dụng",
+    "text": "Tải catalogue đầy đủ để xem tất cả các dòng than hoạt tính, thông số kỹ thuật và ứng dụng khuyến nghị trong một tài liệu.",
+    "buttonLabel": "Tải toàn bộ bảng thông số sản phẩm",
     "buttonHref": "#"
   },
   "faq": {
     "hidden": false,
-    "title": "FAQs on Activated Carbon",
+    "title": "Câu hỏi thường gặp về than hoạt tính",
     "items": [
-      { "q": "How do I choose the right activated carbon?", "a": "It depends on the contaminant, the medium (liquid or gas), flow rate and contact time. Share your process details and our engineers will recommend a grade, particle size and activity level." },
-      { "q": "What is the difference between Powdered vs Granular carbon?", "a": "Powdered carbon (PAC) is dosed directly and removed by filtration, ideal for batch or seasonal treatment. Granular carbon (GAC) is used in fixed beds for continuous treatment and can be regenerated." },
-      { "q": "Why choose coconut shell activated carbon?", "a": "Coconut shell carbon has a high share of micropores, excellent hardness and low ash, giving strong adsorption of small molecules and long service life. It is also made from a renewable raw material." },
-      { "q": "Can carbon be customised?", "a": "Yes. We tailor activity (CTC/iodine), particle size, hardness, ash and pH, and can supply acid-washed or impregnated grades to match your application." },
-      { "q": "Are your products certified?", "a": "Our products are manufactured under documented quality systems, and we can provide test certificates and product data sheets for every batch on request." },
-      { "q": "What is activated carbon used for?", "a": "Water and wastewater treatment, air and gas purification, gold recovery, oil & gas processing, and food & beverage purification, among many other applications." }
+      { "q": "Làm sao chọn đúng loại than hoạt tính?", "a": "Tùy vào chất cần loại bỏ, môi trường (lỏng hay khí), lưu lượng và thời gian tiếp xúc. Hãy chia sẻ thông tin quy trình, kỹ sư của chúng tôi sẽ đề xuất loại than, kích thước hạt và độ hoạt tính phù hợp." },
+      { "q": "Than dạng bột và dạng hạt khác nhau thế nào?", "a": "Than bột (PAC) được châm trực tiếp rồi lọc bỏ, phù hợp xử lý theo mẻ hoặc theo mùa. Than hạt (GAC) dùng trong cột lọc cố định để xử lý liên tục và có thể tái sinh." },
+      { "q": "Vì sao nên chọn than hoạt tính gáo dừa?", "a": "Than gáo dừa có nhiều vi mao quản, độ cứng cao và ít tro, giúp hấp phụ mạnh các phân tử nhỏ và có tuổi thọ dài. Nguyên liệu cũng có thể tái tạo." },
+      { "q": "Có thể tùy chỉnh than theo yêu cầu không?", "a": "Có. Chúng tôi tùy chỉnh độ hoạt tính (CTC/iod), kích thước hạt, độ cứng, độ tro và pH, đồng thời cung cấp các dòng than rửa axit hoặc than tẩm theo ứng dụng của bạn." },
+      { "q": "Sản phẩm có chứng nhận không?", "a": "Sản phẩm được sản xuất theo hệ thống quản lý chất lượng có kiểm soát; chúng tôi cung cấp phiếu kiểm nghiệm và bảng thông số cho từng lô hàng khi có yêu cầu." },
+      { "q": "Than hoạt tính được dùng để làm gì?", "a": "Xử lý nước và nước thải, lọc khí và không khí, thu hồi vàng, chế biến dầu khí, làm sạch thực phẩm và đồ uống, cùng nhiều ứng dụng khác." }
     ]
   },
   "footer": {
-    "ctaTitle": "Not Sure Which Grade You Need?",
-    "ctaText": "Our engineers help you match the right carbon to your specific process.",
-    "ctaButton": "Request Product Specifications",
+    "ctaTitle": "Chưa biết nên chọn loại than nào?",
+    "ctaText": "Kỹ sư của chúng tôi sẽ giúp bạn chọn đúng loại than cho quy trình của mình.",
+    "ctaButton": "Yêu cầu thông số sản phẩm",
     "ctaHref": "#",
     "logo": "https://framerusercontent.com/images/RC08RV0KYiUNCvHbYSInGKfUpUE.png",
     "addresses": [
-      { "title": "Head Office", "lines": "1604 Lodha Supremus,\nDr. E. Moses Road, Worli,\nMumbai, Maharashtra,\n400 018 India" },
-      { "title": "Manufacturing Plant", "lines": "Plot Nos. R28 - R30, SIPCOT Industrial Area\nPerundurai, Dist. Erode,\nTamil Nadu\n638 052 India" }
+      { "title": "Trụ sở chính", "lines": "1604 Lodha Supremus,\nDr. E. Moses Road, Worli,\nMumbai, Maharashtra,\n400 018, Ấn Độ" },
+      { "title": "Nhà máy sản xuất", "lines": "Lô R28 - R30, KCN SIPCOT\nPerundurai, quận Erode,\nTamil Nadu\n638 052, Ấn Độ" }
     ],
     "email": "info@ivarcarbons.com",
     "phone": "+91-22-3521-7590",
     "columns": [
       {
-        "title": "Industries",
+        "title": "Ngành ứng dụng",
         "links": [
-          { "label": "Water Treatment", "href": "#industries" },
-          { "label": "Air & Gas Purification", "href": "#industries" },
-          { "label": "Oil & Gas", "href": "#industries" },
-          { "label": "Gold Mining", "href": "#industries" },
-          { "label": "Food & Beverages", "href": "#industries" }
+          { "label": "Xử lý nước", "href": "#industries" },
+          { "label": "Lọc khí & không khí", "href": "#industries" },
+          { "label": "Dầu khí", "href": "#industries" },
+          { "label": "Khai thác vàng", "href": "#industries" },
+          { "label": "Thực phẩm & đồ uống", "href": "#industries" }
         ]
       },
       {
-        "title": "Capabilities",
+        "title": "Năng lực",
         "links": [
-          { "label": "Carbon Engineering", "href": "#capabilities" },
-          { "label": "Integrated Logistics", "href": "#capabilities" },
-          { "label": "Contract Research & Manufacturing", "href": "#capabilities" },
-          { "label": "Controlled Uniformity", "href": "#capabilities" }
+          { "label": "Kỹ thuật than", "href": "#capabilities" },
+          { "label": "Logistics tích hợp", "href": "#capabilities" },
+          { "label": "Nghiên cứu & sản xuất theo hợp đồng", "href": "#capabilities" },
+          { "label": "Đồng nhất có kiểm soát", "href": "#capabilities" }
         ]
       },
       {
-        "title": "Company",
+        "title": "Công ty",
         "links": [
-          { "label": "About Us", "href": "#" },
-          { "label": "Products", "href": "#" },
-          { "label": "Infrastructure", "href": "#" },
-          { "label": "Commitment to Sustainability", "href": "#" },
-          { "label": "Resources", "href": "#" }
+          { "label": "Về chúng tôi", "href": "#" },
+          { "label": "Sản phẩm", "href": "#" },
+          { "label": "Cơ sở hạ tầng", "href": "#" },
+          { "label": "Cam kết bền vững", "href": "#" },
+          { "label": "Tài liệu", "href": "#" }
         ]
       }
     ],
-    "copyright": "© 2026 Ivar Carbons. All rights reserved."
+    "copyright": "© 2026 Ivar Carbons. Bảo lưu mọi quyền."
   }
 }
