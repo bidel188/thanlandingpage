@@ -424,9 +424,11 @@ if (PREVIEW) {
     if (el) parent.postMessage({ type: 'select', path: el.dataset.edit }, location.origin);
   }, true);
   parent.postMessage({ type: 'ready' }, location.origin);
+} else if (window.__CONTENT__) {
+  render(window.__CONTENT__); // server đã nhúng sẵn nội dung
 } else {
-  fetch('content.json', { cache: 'no-store' }).then((r) => r.json()).then(render)
-    .catch(() => { document.getElementById('app').innerHTML = '<p style="padding:40px">Không đọc được content.json. Hãy mở trang qua server (node server.js).</p>'; });
+  fetch('/api/content', { cache: 'no-store' }).then((r) => r.json()).then(render)
+    .catch(() => { document.getElementById('app').innerHTML = '<p style="padding:40px">Không tải được nội dung.</p>'; });
 }
 
 function focusPath(path) {

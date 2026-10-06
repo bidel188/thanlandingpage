@@ -97,6 +97,28 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.err { background: #b91c1c; }
 
+/* Tài khoản */
+[hidden] { display: none !important; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: grid; place-items: center; z-index: 90; padding: 16px; }
+.dialog { background: #fff; border-radius: 14px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; padding: 20px 22px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+.dialog-h { display: flex; justify-content: space-between; align-items: center; font-size: 17px; }
+.x { border: 0; background: none; font-size: 16px; color: var(--muted); width: 32px; height: 32px; border-radius: 8px; }
+.x:hover { background: var(--bg); }
+.dialog h4 { margin: 20px 0 10px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.form { display: grid; gap: 8px; }
+.form.row { grid-template-columns: 1fr 1fr auto; margin-top: 8px; }
+.form input { border: 1px solid var(--line); border-radius: 7px; padding: 9px 10px; outline: none; min-width: 0; }
+.form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+.form .save { justify-content: center; }
+.users { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; }
+.users li { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.users li:last-child { border-bottom: 0; }
+.users em { color: var(--muted); font-style: normal; font-size: 12px; }
+.tbtn.sm { padding: 4px 10px; font-size: 12px; }
+.tbtn.confirm { background: #fee2e2; border-color: #fecaca; color: #b91c1c; }
+.logout { width: 100%; justify-content: center; margin-top: 22px; color: #b91c1c; }
+@media (max-width: 480px) { .form.row { grid-template-columns: 1fr; } }
+
 @media (max-width: 900px) {
   .main { flex-direction: column; }
   .side { width: 100%; height: 50%; border-right: 0; border-bottom: 1px solid var(--line); }
@@ -116,6 +138,27 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
   <button class="tbtn" id="undo" title="Hoàn tác (Ctrl+Z khi không gõ chữ)" disabled>↶ Hoàn tác</button>
   <a class="tbtn" href="/" target="_blank">Xem trang thật ↗</a>
   <button class="tbtn save" id="save" title="Ctrl+S">💾 Lưu</button>
+  <button class="tbtn" id="userBtn" title="Tài khoản">👤</button>
+</div>
+<div class="modal" id="account" hidden>
+  <div class="dialog">
+    <div class="dialog-h"><b>Tài khoản</b><button class="x" data-close>✕</button></div>
+    <h4>Đổi mật khẩu của bạn</h4>
+    <form id="changePw" class="form">
+      <input type="password" name="current" placeholder="Mật khẩu hiện tại" autocomplete="current-password" required>
+      <input type="password" name="next" placeholder="Mật khẩu mới (tối thiểu 8 ký tự)" autocomplete="new-password" minlength="8" required>
+      <input type="password" name="confirm" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" minlength="8" required>
+      <button class="tbtn save">Đổi mật khẩu</button>
+    </form>
+    <h4>Danh sách admin</h4>
+    <ul class="users" id="users"></ul>
+    <form id="addUser" class="form row">
+      <input name="username" placeholder="Tên đăng nhập mới" autocomplete="off" required pattern="[a-zA-Z0-9._\-]{3,32}" title="3–32 ký tự: chữ không dấu, số, . _ -">
+      <input type="password" name="password" placeholder="Mật khẩu" autocomplete="new-password" minlength="8" required>
+      <button class="tbtn">+ Thêm</button>
+    </form>
+    <button class="tbtn logout" id="logout">Đăng xuất</button>
+  </div>
 </div>
 <div class="main">
   <aside class="side" id="side"></aside>
@@ -427,16 +470,35 @@ side.addEventListener('drop', (e) => {
   const file = e.dataTransfer.files[0];
   if (file) uploadImage(b.dataset.drop, file);
 });
+/* ================= GỌI API ================= */
+async function api(method, url, body, headers = {}) {
+  const isJson = body !== undefined && !(body instanceof Blob);
+  const res = await fetch(url, {
+    method,
+    headers: { 'X-Requested-With': 'admin', ...(isJson ? { 'Content-Type': 'application/json' } : {}), ...headers },
+    body: isJson ? JSON.stringify(body) : body,
+  });
+  const out = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    showLoginExpired();
+    throw new Error('Phiên đăng nhập đã hết hạn');
+  }
+  if (!res.ok) throw new Error(out.error || `Lỗi ${res.status}`);
+  return out;
+}
+function showLoginExpired() {
+  toast('Phiên đăng nhập hết hạn — mở tab mới để đăng nhập, rồi quay lại bấm Lưu (nội dung đang sửa vẫn còn)', true);
+  window.open('/login', '_blank');
+}
+
+/* ================= UPLOAD ẢNH (lưu vào database) ================= */
 async function uploadImage(path, file) {
   if (!file.type.startsWith('image/')) return toast('File này không phải ảnh', true);
   if (file.size > 15 * 1024 * 1024) return toast('Ảnh quá lớn (tối đa 15MB)', true);
   const box = side.querySelector(`[data-drop="${CSS.escape(path)}"]`);
   box?.classList.add('loading');
   try {
-    const data = await new Promise((ok, fail) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = fail; r.readAsDataURL(file); });
-    const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: file.name, data }) });
-    const out = await res.json();
-    if (!res.ok) throw new Error(out.error);
+    const out = await api('POST', '/api/upload', file, { 'Content-Type': file.type, 'X-Filename': encodeURIComponent(file.name) });
     structural(() => set(path, out.url));
     toast('Đã thay ảnh — nhớ bấm Lưu');
   } catch (err) {
@@ -448,37 +510,91 @@ async function uploadImage(path, file) {
 /* ================= LƯU ================= */
 async function save() {
   flushTyping();
+  const btn = $('#save');
+  btn.disabled = true;
   try {
-    const res = await fetch('/api/content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
-    if (!res.ok) throw new Error((await res.json()).error);
+    await api('PUT', '/api/content', content);
     saved = JSON.stringify(content); changed(); toast('✓ Đã lưu! Trang thật đã cập nhật.');
-  } catch (err) { toast('Lưu thất bại: ' + err.message + ' (server còn chạy không?)', true); }
+  } catch (err) { toast('Lưu thất bại: ' + err.message, true); }
+  btn.disabled = false;
 }
 $('#save').onclick = save;
 $('#undo').onclick = undo;
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save(); }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.target.matches('input, textarea')) { e.preventDefault(); undo(); }
+  if (e.key === 'Escape') closeAccount();
 });
-window.addEventListener('beforeunload', (e) => { if (JSON.stringify(content) !== saved) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeunload', (e) => { if (content && JSON.stringify(content) !== saved) { e.preventDefault(); e.returnValue = ''; } });
 
 let toastT;
 function toast(msg, err) {
   const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
-  clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', err ? 5000 : 2600);
 }
+
+/* ================= TÀI KHOẢN ================= */
+let me = null;
+const modal = $('#account');
+function closeAccount() { modal.hidden = true; }
+$('#userBtn').onclick = () => { modal.hidden = false; loadUsers(); };
+modal.addEventListener('click', (e) => { if (e.target === modal || e.target.closest('[data-close]')) closeAccount(); });
+
+async function loadUsers() {
+  const list = $('#users');
+  try {
+    const users = await api('GET', '/api/users');
+    list.innerHTML = users.map((u) => `<li><span>👤 ${esc(u.username)}${u.id === me.id ? ' <em>(bạn)</em>' : ''}</span>
+      ${u.id === me.id ? '' : `<button class="tbtn sm" data-deluser="${u.id}" data-name="${esc(u.username)}">Xoá</button>`}</li>`).join('');
+  } catch (err) { list.innerHTML = `<li>${esc(err.message)}</li>`; }
+}
+$('#users').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-deluser]');
+  if (!b) return;
+  // Bấm 2 lần để xác nhận xoá
+  if (!b.classList.contains('confirm')) { b.classList.add('confirm'); b.textContent = 'Chắc chắn xoá?'; return; }
+  try { await api('DELETE', `/api/users/${b.dataset.deluser}`); toast(`Đã xoá tài khoản ${b.dataset.name}`); loadUsers(); }
+  catch (err) { toast(err.message, true); }
+});
+$('#addUser').onsubmit = async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  try {
+    await api('POST', '/api/users', { username: f.username.value.trim(), password: f.password.value });
+    toast(`Đã tạo tài khoản ${f.username.value.trim()}`); f.reset(); loadUsers();
+  } catch (err) { toast(err.message, true); }
+};
+$('#changePw').onsubmit = async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  if (f.next.value !== f.confirm.value) return toast('Mật khẩu nhập lại không khớp', true);
+  try {
+    await api('POST', '/api/password', { current: f.current.value, next: f.next.value });
+    toast('✓ Đã đổi mật khẩu. Các thiết bị khác đã bị đăng xuất.'); f.reset();
+  } catch (err) { toast(err.message, true); }
+};
+$('#logout').onclick = async () => {
+  if (JSON.stringify(content) !== saved && !$('#logout').classList.contains('confirm')) {
+    $('#logout').classList.add('confirm'); $('#logout').textContent = 'Còn thay đổi chưa lưu — bấm lần nữa để thoát';
+    return;
+  }
+  await api('POST', '/api/logout').catch(() => {});
+  saved = JSON.stringify(content);
+  location.replace('/login');
+};
 
 /* ================= KHỞI ĐỘNG ================= */
 (async () => {
   try {
-    content = await (await fetch('content.json', { cache: 'no-store' })).json();
-  } catch {
-    side.innerHTML = '<div class="tip" style="background:#fee2e2;color:#991b1b">Không đọc được content.json. Hãy chạy <b>node server.js</b> (hoặc bấm đúp <b>start.bat</b>) rồi mở <b>http://localhost:3000/admin</b>.</div>';
+    [me, content] = await Promise.all([api('GET', '/api/me'), api('GET', '/api/content')]);
+  } catch (err) {
+    side.innerHTML = `<div class="tip" style="background:#fee2e2;color:#991b1b">Không tải được dữ liệu: ${esc(err.message)}. <a href="/login">Đăng nhập lại</a></div>`;
     return;
   }
+  $('#userBtn').textContent = '👤 ' + me.username;
   saved = snap = JSON.stringify(content);
   renderForm(); changed();
-  frame.src = 'index.html?preview=1';
+  frame.src = '/?preview=1';
 })();
 </script>
 </body>
