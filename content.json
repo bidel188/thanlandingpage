@@ -1,0 +1,210 @@
+{
+  "theme": {
+    "accent": "#ED3833",
+    "text": "#313131",
+    "muted": "#535353",
+    "soft": "#F9F9F9"
+  },
+  "seo": {
+    "title": "Coconut Shell Activated Carbon Manufacturer | Ivar Carbons",
+    "description": "Premium coconut shell activated carbon for water treatment, air purification, gold recovery, oil & gas, and food processing."
+  },
+  "header": {
+    "logo": "https://framerusercontent.com/images/CcJahzA47kzLDKZzrCkVemqdxs.png",
+    "nav": [
+      { "label": "Our Approach", "href": "#usp" },
+      { "label": "Products", "href": "#banner" },
+      { "label": "Industries & Applications", "href": "#industries" },
+      { "label": "Capabilities", "href": "#capabilities" },
+      { "label": "Company", "href": "#footer" },
+      { "label": "Contact Us", "href": "#footer" }
+    ],
+    "ctaLabel": "Enquiry",
+    "ctaHref": "#footer"
+  },
+  "hero": {
+    "hidden": false,
+    "image": "https://framerusercontent.com/images/bgCD0bbEodTVgS29gYRWOiv4Ec.png",
+    "title": "Coconut Shell\nCarbon Solutions",
+    "subtitle": "",
+    "buttonLabel": "Explore Our Products",
+    "buttonHref": "#industries"
+  },
+  "usp": {
+    "hidden": false,
+    "title": "Our Edge in\nActivated Carbon Manufacturing",
+    "buttonLabel": "Our Approach",
+    "buttonHref": "#capabilities",
+    "items": [
+      { "icon": "users", "title": "Customer-Centric Solutions", "text": "Advanced customisation to meet evolving customer needs across applications and markets." },
+      { "icon": "truck", "title": "Supply Chain", "text": "Our strong sourcing and production capacity ensure consistent pricing, and operational continuity." },
+      { "icon": "factory", "title": "Manufacturing Competency", "text": "Our carbons are engineered to deliver consistent porosity, hardness, and purity across every batch." }
+    ],
+    "stats": [
+      { "value": "8000", "unit": "TPA", "label": "Manufacturing Capacity" },
+      { "value": "12000", "unit": "TPA", "label": "Scalable Capacity" },
+      { "value": "5+", "unit": "Industries", "label": "Global Expertise" }
+    ]
+  },
+  "industries": {
+    "hidden": false,
+    "title": "Activated Carbon for Key Industrial Applications",
+    "tabs": [
+      {
+        "name": "Water Treatment",
+        "image": "https://framerusercontent.com/images/CfpScewroJ7KbojM9AwQgwqZZk.png",
+        "heading": "Clean Water, Powered by Better Carbon.",
+        "text": "High-efficiency activated carbon for water treatment that strips organics and chlorine with ease. Perfect for municipal and industrial polishing.",
+        "features": [
+          { "text": "Drinking water purification" },
+          { "text": "Industrial wastewater treatment" },
+          { "text": "Contaminants and COD reduction" }
+        ],
+        "products": "IvarCarb™ Core",
+        "button1": "Explore Details",
+        "button1Href": "#",
+        "button2": "All Products",
+        "button2Href": "#"
+      },
+      {
+        "name": "Air & Gas Purification",
+        "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
+        "heading": "Cleaner Air Through Engineered Adsorption.",
+        "text": "High-activity carbon that captures VOCs, odours and harmful gases for industrial and indoor air applications.",
+        "features": [
+          { "text": "VOC and odour removal" },
+          { "text": "Solvent recovery" },
+          { "text": "Respirator and HVAC filters" }
+        ],
+        "products": "IvarCarb™ Air",
+        "button1": "Explore Details",
+        "button1Href": "#",
+        "button2": "All Products",
+        "button2Href": "#"
+      },
+      {
+        "name": "Oil & Gas",
+        "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
+        "heading": "Purity for Demanding Process Streams.",
+        "text": "Robust carbon grades for removing mercury, sulphur compounds and hydrocarbons from process gas and liquids.",
+        "features": [
+          { "text": "Amine purification" },
+          { "text": "Mercury and H₂S removal" },
+          { "text": "Condensate polishing" }
+        ],
+        "products": "IvarCarb™ Process",
+        "button1": "Explore Details",
+        "button1Href": "#",
+        "button2": "All Products",
+        "button2Href": "#"
+      },
+      {
+        "name": "Gold Mining",
+        "image": "https://framerusercontent.com/images/bgCD0bbEodTVgS29gYRWOiv4Ec.png",
+        "heading": "Maximise Gold Recovery.",
+        "text": "Hard, abrasion-resistant carbon with fast loading kinetics for CIP, CIL and heap-leach circuits.",
+        "features": [
+          { "text": "Carbon-in-pulp (CIP)" },
+          { "text": "Carbon-in-leach (CIL)" },
+          { "text": "Heap leach recovery" }
+        ],
+        "products": "IvarCarb™ Gold",
+        "button1": "Explore Details",
+        "button1Href": "#",
+        "button2": "All Products",
+        "button2Href": "#"
+      },
+      {
+        "name": "Food & Beverages",
+        "image": "https://framerusercontent.com/images/CfpScewroJ7KbojM9AwQgwqZZk.png",
+        "heading": "Food-Grade Purity, Batch After Batch.",
+        "text": "Low-ash, high-purity carbon for decolourisation, deodorisation and purification of food and beverage products.",
+        "features": [
+          { "text": "Sugar and syrup decolourisation" },
+          { "text": "Edible oil purification" },
+          { "text": "Beverage and water polishing" }
+        ],
+        "products": "IvarCarb™ Pure",
+        "button1": "Explore Details",
+        "button1Href": "#",
+        "button2": "All Products",
+        "button2Href": "#"
+      }
+    ]
+  },
+  "capabilities": {
+    "hidden": false,
+    "title": "Reliability Built on our Capabilities",
+    "image": "https://framerusercontent.com/images/q2tsOK84jGkKeufRXtcQLtYi3Vs.png",
+    "cards": [
+      { "icon": "flask", "title": "Carbon Engineering", "text": "A comprehensive portfolio of activated carbon grades tailored to specific applications.", "linkLabel": "Read More", "href": "#" },
+      { "icon": "truck", "title": "Integrated Logistics", "text": "End-to-end control from sourcing to delivery for consistent supply and reliable fulfilment.", "linkLabel": "Read More", "href": "#" },
+      { "icon": "grid", "title": "Controlled Uniformity", "text": "Consistent CTC activity and porosity engineered for reliable adsorption performance.", "linkLabel": "Read More", "href": "#" },
+      { "icon": "factory", "title": "Research & Manufacturing", "text": "Contract-developed activated carbon solutions aligned to your exact application needs.", "linkLabel": "Read More", "href": "#" }
+    ]
+  },
+  "banner": {
+    "hidden": false,
+    "title": "Find the Right Carbon for Every Application",
+    "text": "Download the complete catalogue to explore all activated carbon grades, technical specifications, and recommended applications in one document.",
+    "buttonLabel": "Download All Product Data Sheet",
+    "buttonHref": "#"
+  },
+  "faq": {
+    "hidden": false,
+    "title": "FAQs on Activated Carbon",
+    "items": [
+      { "q": "How do I choose the right activated carbon?", "a": "It depends on the contaminant, the medium (liquid or gas), flow rate and contact time. Share your process details and our engineers will recommend a grade, particle size and activity level." },
+      { "q": "What is the difference between Powdered vs Granular carbon?", "a": "Powdered carbon (PAC) is dosed directly and removed by filtration, ideal for batch or seasonal treatment. Granular carbon (GAC) is used in fixed beds for continuous treatment and can be regenerated." },
+      { "q": "Why choose coconut shell activated carbon?", "a": "Coconut shell carbon has a high share of micropores, excellent hardness and low ash, giving strong adsorption of small molecules and long service life. It is also made from a renewable raw material." },
+      { "q": "Can carbon be customised?", "a": "Yes. We tailor activity (CTC/iodine), particle size, hardness, ash and pH, and can supply acid-washed or impregnated grades to match your application." },
+      { "q": "Are your products certified?", "a": "Our products are manufactured under documented quality systems, and we can provide test certificates and product data sheets for every batch on request." },
+      { "q": "What is activated carbon used for?", "a": "Water and wastewater treatment, air and gas purification, gold recovery, oil & gas processing, and food & beverage purification, among many other applications." }
+    ]
+  },
+  "footer": {
+    "ctaTitle": "Not Sure Which Grade You Need?",
+    "ctaText": "Our engineers help you match the right carbon to your specific process.",
+    "ctaButton": "Request Product Specifications",
+    "ctaHref": "#",
+    "logo": "https://framerusercontent.com/images/RC08RV0KYiUNCvHbYSInGKfUpUE.png",
+    "addresses": [
+      { "title": "Head Office", "lines": "1604 Lodha Supremus,\nDr. E. Moses Road, Worli,\nMumbai, Maharashtra,\n400 018 India" },
+      { "title": "Manufacturing Plant", "lines": "Plot Nos. R28 - R30, SIPCOT Industrial Area\nPerundurai, Dist. Erode,\nTamil Nadu\n638 052 India" }
+    ],
+    "email": "info@ivarcarbons.com",
+    "phone": "+91-22-3521-7590",
+    "columns": [
+      {
+        "title": "Industries",
+        "links": [
+          { "label": "Water Treatment", "href": "#industries" },
+          { "label": "Air & Gas Purification", "href": "#industries" },
+          { "label": "Oil & Gas", "href": "#industries" },
+          { "label": "Gold Mining", "href": "#industries" },
+          { "label": "Food & Beverages", "href": "#industries" }
+        ]
+      },
+      {
+        "title": "Capabilities",
+        "links": [
+          { "label": "Carbon Engineering", "href": "#capabilities" },
+          { "label": "Integrated Logistics", "href": "#capabilities" },
+          { "label": "Contract Research & Manufacturing", "href": "#capabilities" },
+          { "label": "Controlled Uniformity", "href": "#capabilities" }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          { "label": "About Us", "href": "#" },
+          { "label": "Products", "href": "#" },
+          { "label": "Infrastructure", "href": "#" },
+          { "label": "Commitment to Sustainability", "href": "#" },
+          { "label": "Resources", "href": "#" }
+        ]
+      }
+    ],
+    "copyright": "© 2026 Ivar Carbons. All rights reserved."
+  }
+}

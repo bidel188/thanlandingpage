@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin · Chỉnh sửa landing</title>
+<style>
+:root { --bg: #f4f4f5; --panel: #fff; --line: #e4e4e7; --text: #18181b; --muted: #71717a; --accent: #ED3833; --blue: #2563eb; --green: #16a34a; }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; font: 14px/1.45 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--text); background: var(--bg); display: flex; flex-direction: column; }
+button { font: inherit; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+
+/* Top bar */
+.top { height: 56px; flex: none; background: var(--panel); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; padding: 0 16px; }
+.brand { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; margin-right: auto; }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.devices { display: flex; background: var(--bg); border-radius: 8px; padding: 3px; }
+.devices button { border: 0; background: none; padding: 6px 12px; border-radius: 6px; color: var(--muted); font-weight: 600; }
+.devices button.on { background: #fff; color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.status { font-size: 13px; color: var(--muted); min-width: 120px; text-align: right; }
+.status.dirty { color: #b45309; font-weight: 600; }
+.status.ok { color: var(--green); }
+.tbtn { border: 1px solid var(--line); background: #fff; padding: 8px 14px; border-radius: 8px; font-weight: 600; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.tbtn:hover { background: var(--bg); }
+.tbtn:disabled { opacity: .45; cursor: default; }
+.save { background: var(--text); color: #fff; border-color: var(--text); }
+.save:hover { background: #000; }
+.save.pulse { background: var(--accent); border-color: var(--accent); }
+
+/* Layout */
+.main { flex: 1; display: flex; min-height: 0; }
+.side { width: 440px; flex: none; background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; padding: 14px 14px 80px; }
+.tip { background: #eff6ff; color: #1e40af; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 12px; }
+.stage { flex: 1; min-width: 0; position: relative; overflow: hidden; display: flex; justify-content: center; padding: 16px; }
+.frame-wrap { transform-origin: top center; background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,.08); border-radius: 8px; overflow: hidden; flex: none; }
+iframe { border: 0; display: block; width: 100%; height: 100%; }
+
+/* Sections */
+.sec { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; background: #fff; }
+.sec-h { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; user-select: none; }
+.sec-h b { flex: 1; font-size: 14px; }
+.sec-h small { color: var(--muted); font-weight: 400; display: block; font-size: 12px; }
+.sec-h .chev { transition: transform .2s; color: var(--muted); }
+.sec.open .sec-h .chev { transform: rotate(90deg); }
+.sec-h .badge { font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; }
+.sec-b { display: none; padding: 4px 14px 16px; border-top: 1px solid var(--line); }
+.sec.open .sec-b { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Fields */
+.fld { grid-column: span 2; display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.fld.half { grid-column: span 1; }
+.fld > span { font-size: 12px; font-weight: 600; color: var(--muted); }
+.fld input[type=text], .fld textarea { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 8px 10px; background: #fff; outline: none; transition: border-color .15s, box-shadow .15s; }
+.fld textarea { resize: vertical; min-height: 64px; }
+.fld input:focus, .fld textarea:focus, .flash { border-color: var(--blue) !important; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+.color { display: flex; gap: 6px; }
+.color input[type=color] { width: 40px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 7px; background: #fff; }
+.switch { grid-column: span 2; display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 600; cursor: pointer; }
+.switch input { width: 16px; height: 16px; accent-color: var(--green); }
+
+.img-box { position: relative; height: 140px; border: 1.5px dashed var(--line); border-radius: 8px; background: #fafafa center/contain no-repeat; display: flex; align-items: flex-end; justify-content: center; padding: 10px; transition: border-color .15s, background-color .15s; }
+.img-box.drag { border-color: var(--blue); background-color: #eff6ff; }
+.img-box .up { border: 0; background: rgba(24,24,27,.85); color: #fff; padding: 7px 12px; border-radius: 7px; font-weight: 600; font-size: 13px; }
+.img-box .up:hover { background: #000; }
+.img-box.loading::after { content: "Đang tải ảnh…"; position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255,255,255,.85); font-weight: 600; border-radius: 8px; }
+.img-hint { font-size: 11px; color: var(--muted); }
+.fld input.url { font-size: 12px; color: var(--muted); }
+
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
+.icons button { aspect-ratio: 1; border: 1px solid var(--line); border-radius: 7px; background: #fff; padding: 7px; color: var(--muted); }
+.icons button svg { width: 100%; height: 100%; }
+.icons button.on { border-color: var(--accent); color: var(--accent); background: #fff5f5; }
+
+/* Lists */
+.list { grid-column: span 2; margin-top: 10px; }
+.list > span { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
+.item { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 6px; background: #fcfcfc; }
+.item-h { display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 10px; cursor: pointer; }
+.item-h .n { width: 22px; height: 22px; border-radius: 6px; background: var(--bg); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
+.item-h .sum { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.tools { display: flex; gap: 2px; flex: none; }
+.tools button { width: 26px; height: 26px; border: 0; background: none; border-radius: 6px; color: var(--muted); font-size: 13px; }
+.tools button:hover { background: var(--bg); color: var(--text); }
+.tools button.del:hover { background: #fee2e2; color: #b91c1c; }
+.item-b { display: none; padding: 0 10px 12px; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.item.open > .item-b { display: grid; }
+.item.inline { display: flex; align-items: center; gap: 6px; padding: 5px 6px; background: #fff; }
+.item.inline .row { flex: 1; display: flex; gap: 6px; min-width: 0; }
+.item.inline input { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; outline: none; }
+.item.inline input:focus { border-color: var(--blue); }
+.add { width: 100%; border: 1.5px dashed var(--line); background: none; border-radius: 8px; padding: 8px; color: var(--muted); font-weight: 600; }
+.add:hover { border-color: var(--text); color: var(--text); }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); background: var(--text); color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: 600; opacity: 0; transition: all .25s; pointer-events: none; z-index: 99; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.err { background: #b91c1c; }
+
+@media (max-width: 900px) {
+  .main { flex-direction: column; }
+  .side { width: 100%; height: 50%; border-right: 0; border-bottom: 1px solid var(--line); }
+  .devices, .status { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand"><i></i> Admin landing</div>
+  <div class="devices">
+    <button data-device="1440" class="on">🖥 Desktop</button>
+    <button data-device="834">Tablet</button>
+    <button data-device="390">📱 Mobile</button>
+  </div>
+  <span class="status" id="status">Đang tải…</span>
+  <button class="tbtn" id="undo" title="Hoàn tác (Ctrl+Z khi không gõ chữ)" disabled>↶ Hoàn tác</button>
+  <a class="tbtn" href="/" target="_blank">Xem trang thật ↗</a>
+  <button class="tbtn save" id="save" title="Ctrl+S">💾 Lưu</button>
+</div>
+<div class="main">
+  <aside class="side" id="side"></aside>
+  <div class="stage" id="stage"><div class="frame-wrap" id="wrap"><iframe id="preview" title="Preview"></iframe></div></div>
+</div>
+<input type="file" id="file" accept="image/*" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= SCHEMA: mô tả các ô nhập cho từng section =================
+   Kiểu: text | textarea | image | color | icon | toggle | list
+   Muốn thêm ô mới: thêm field vào đây + dùng nó trong index.html */
+const link = (k, label, hrefKey = k.replace(/Label$|Button$/, '') + 'Href') => [
+  { k, t: 'text', label, half: true },
+  { k: hrefKey, t: 'text', label: 'Link khi bấm', half: true, ph: '#section hoặc https://…' },
+];
+const SHOW = { k: 'hidden', t: 'toggle' };
+const SCHEMA = [
+  { key: 'theme', title: 'Màu sắc', hint: 'Màu chủ đạo của cả trang', fields: [
+    { k: 'accent', t: 'color', label: 'Màu nhấn (nút, icon)', half: true },
+    { k: 'text', t: 'color', label: 'Màu tiêu đề', half: true },
+    { k: 'muted', t: 'color', label: 'Màu chữ thường', half: true },
+    { k: 'soft', t: 'color', label: 'Màu nền xám nhạt', half: true },
+  ]},
+  { key: 'seo', title: 'SEO / Google', hint: 'Tiêu đề tab & mô tả khi tìm kiếm', fields: [
+    { k: 'title', t: 'text', label: 'Tiêu đề trang' },
+    { k: 'description', t: 'textarea', label: 'Mô tả ngắn' },
+  ]},
+  { key: 'header', title: 'Menu đầu trang', hint: 'Logo, menu, nút liên hệ', fields: [
+    { k: 'logo', t: 'image', label: 'Logo' },
+    { k: 'nav', t: 'list', label: 'Các mục menu', inline: true, item: [
+      { k: 'label', t: 'text', ph: 'Tên mục' }, { k: 'href', t: 'text', ph: 'Link' } ] },
+    ...link('ctaLabel', 'Chữ nút bên phải', 'ctaHref'),
+  ]},
+  { key: 'hero', title: 'Banner chính (Hero)', hint: 'Ảnh lớn đầu trang', fields: [
+    SHOW,
+    { k: 'image', t: 'image', label: 'Ảnh nền' },
+    { k: 'title', t: 'textarea', label: 'Tiêu đề lớn (Enter = xuống dòng)' },
+    { k: 'subtitle', t: 'textarea', label: 'Mô tả phụ (bỏ trống = ẩn)' },
+    ...link('buttonLabel', 'Chữ trên nút'),
+  ]},
+  { key: 'usp', title: 'Điểm mạnh & số liệu', hint: '3 thẻ ưu điểm + dải con số', fields: [
+    SHOW,
+    { k: 'title', t: 'textarea', label: 'Tiêu đề section' },
+    ...link('buttonLabel', 'Chữ trên nút'),
+    { k: 'items', t: 'list', label: 'Thẻ ưu điểm', name: 'thẻ', item: [
+      { k: 'icon', t: 'icon', label: 'Icon' },
+      { k: 'title', t: 'text', label: 'Tiêu đề' },
+      { k: 'text', t: 'textarea', label: 'Mô tả' } ] },
+    { k: 'stats', t: 'list', label: 'Con số (số · đơn vị · nhãn)', name: 'con số', inline: true, item: [
+      { k: 'value', t: 'text', ph: '8000' }, { k: 'unit', t: 'text', ph: 'TPA' }, { k: 'label', t: 'text', ph: 'Nhãn' } ] },
+  ]},
+  { key: 'industries', title: 'Ngành ứng dụng (Tabs)', hint: 'Mỗi tab một ngành', fields: [
+    SHOW,
+    { k: 'title', t: 'textarea', label: 'Tiêu đề section' },
+    { k: 'tabs', t: 'list', label: 'Các tab', name: 'tab', item: [
+      { k: 'name', t: 'text', label: 'Tên tab' },
+      { k: 'image', t: 'image', label: 'Ảnh' },
+      { k: 'heading', t: 'textarea', label: 'Tiêu đề' },
+      { k: 'text', t: 'textarea', label: 'Mô tả' },
+      { k: 'features', t: 'list', label: 'Gạch đầu dòng', name: 'dòng', inline: true, item: [{ k: 'text', t: 'text', ph: 'Nội dung' }] },
+      { k: 'products', t: 'text', label: 'Tên sản phẩm' },
+      ...link('button1', 'Nút 1'),
+      ...link('button2', 'Nút 2'),
+    ]},
+  ]},
+  { key: 'capabilities', title: 'Năng lực', hint: '4 thẻ + ảnh nhà máy', fields: [
+    SHOW,
+    { k: 'title', t: 'textarea', label: 'Tiêu đề section' },
+    { k: 'image', t: 'image', label: 'Ảnh bên phải' },
+    { k: 'cards', t: 'list', label: 'Thẻ năng lực', name: 'thẻ', item: [
+      { k: 'icon', t: 'icon', label: 'Icon' },
+      { k: 'title', t: 'text', label: 'Tiêu đề' },
+      { k: 'text', t: 'textarea', label: 'Mô tả' },
+      ...link('linkLabel', 'Chữ link', 'href') ] },
+  ]},
+  { key: 'banner', title: 'Banner tải catalogue', hint: 'Khối nền tối có nút đỏ', fields: [
+    SHOW,
+    { k: 'title', t: 'text', label: 'Tiêu đề' },
+    { k: 'text', t: 'textarea', label: 'Mô tả' },
+    ...link('buttonLabel', 'Chữ trên nút'),
+  ]},
+  { key: 'faq', title: 'Câu hỏi thường gặp', hint: 'Hỏi – đáp dạng xổ xuống', fields: [
+    SHOW,
+    { k: 'title', t: 'text', label: 'Tiêu đề section' },
+    { k: 'items', t: 'list', label: 'Câu hỏi', name: 'câu hỏi', item: [
+      { k: 'q', t: 'text', label: 'Câu hỏi' }, { k: 'a', t: 'textarea', label: 'Trả lời' } ] },
+  ]},
+  { key: 'footer', title: 'Chân trang', hint: 'Địa chỉ, liên hệ, cột link', fields: [
+    { k: 'ctaTitle', t: 'text', label: 'Tiêu đề khối kêu gọi (bỏ trống = ẩn)' },
+    { k: 'ctaText', t: 'textarea', label: 'Mô tả khối kêu gọi' },
+    ...link('ctaButton', 'Chữ trên nút', 'ctaHref'),
+    { k: 'logo', t: 'image', label: 'Logo chân trang' },
+    { k: 'addresses', t: 'list', label: 'Địa chỉ', name: 'địa chỉ', item: [
+      { k: 'title', t: 'text', label: 'Tên (VD: Văn phòng)' }, { k: 'lines', t: 'textarea', label: 'Địa chỉ (Enter = xuống dòng)' } ] },
+    { k: 'email', t: 'text', label: 'Email', half: true },
+    { k: 'phone', t: 'text', label: 'Số điện thoại', half: true },
+    { k: 'columns', t: 'list', label: 'Cột link', name: 'cột', item: [
+      { k: 'title', t: 'text', label: 'Tiêu đề cột' },
+      { k: 'links', t: 'list', label: 'Các link', name: 'link', inline: true, item: [
+        { k: 'label', t: 'text', ph: 'Chữ' }, { k: 'href', t: 'text', ph: 'Link' } ] } ] },
+    { k: 'copyright', t: 'text', label: 'Dòng bản quyền' },
+  ]},
+];
+
+/* ================= STATE ================= */
+let content, saved, snap, typing = null;
+const history = [];
+const openSecs = new Set(['hero']);
+const openItems = new Set();
+const $ = (s) => document.querySelector(s);
+const side = $('#side'), frame = $('#preview');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const get = (path) => path.split('.').reduce((o, k) => (o == null ? o : o[k]), content);
+function set(path, val) {
+  const keys = path.split('.'), last = keys.pop();
+  const obj = keys.reduce((o, k) => (o[k] ??= /^\d+$/.test(k) ? [] : {}), content);
+  obj[last] = val;
+}
+const findField = (path) => {
+  // Tìm định nghĩa field theo path, VD "industries.tabs.0.features"
+  const [sec, ...rest] = path.split('.');
+  let fields = SCHEMA.find((s) => s.key === sec)?.fields, f = null;
+  for (const k of rest) { if (/^\d+$/.test(k)) { fields = f.item; continue; } f = fields?.find((x) => x.k === k); }
+  return f;
+};
+
+/* ================= RENDER FORM ================= */
+function renderForm() {
+  const top = side.scrollTop;
+  side.innerHTML = `<div class="tip">💡 <b>Bấm thẳng vào chữ hoặc ảnh bên phải</b> để nhảy tới ô cần sửa. Kéo-thả ảnh vào khung ảnh để thay.</div>` +
+    SCHEMA.map((s) => {
+      const hidden = content[s.key]?.hidden;
+      return `<div class="sec ${openSecs.has(s.key) ? 'open' : ''}" data-sec="${s.key}">
+        <div class="sec-h" data-open="${s.key}"><span class="chev">▶</span><b>${s.title}<small>${s.hint}</small></b>${hidden ? '<span class="badge">Đang ẩn</span>' : ''}</div>
+        <div class="sec-b">${s.fields.map((f) => field(f, s.key)).join('')}</div>
+      </div>`;
+    }).join('');
+  side.scrollTop = top;
+}
+
+function field(f, base) {
+  const p = `${base}.${f.k}`, v = get(p), cls = `fld ${f.half ? 'half' : ''}`;
+  const label = f.label ? `<span>${f.label}</span>` : '';
+  switch (f.t) {
+    case 'text': return `<label class="${cls}">${label}<input type="text" data-path="${p}" value="${esc(v)}" placeholder="${esc(f.ph || '')}"></label>`;
+    case 'textarea': return `<label class="${cls}">${label}<textarea data-path="${p}" rows="${Math.min(8, Math.max(2, String(v || '').split('\n').length + 1))}">${esc(v)}</textarea></label>`;
+    case 'color': return `<div class="${cls}">${label}<div class="color"><input type="color" data-path="${p}" value="${esc(v)}"><input type="text" data-path="${p}" value="${esc(v)}"></div></div>`;
+    case 'toggle': return `<label class="switch"><input type="checkbox" data-path="${p}" data-invert ${v ? '' : 'checked'}> Hiển thị section này trên trang</label>`;
+    case 'image': return `<div class="${cls}">${label}
+        <div class="img-box" data-drop="${p}" style="background-image:url('${esc(v)}')"><button class="up" data-upload="${p}">📷 Đổi ảnh</button></div>
+        <input type="text" class="url" data-path="${p}" value="${esc(v)}" placeholder="…hoặc dán link ảnh vào đây">
+        <span class="img-hint">Kéo-thả file ảnh vào khung, hoặc bấm “Đổi ảnh”. JPG/PNG/WebP/SVG.</span></div>`;
+    case 'icon': return `<div class="${cls}">${label}<div class="icons">${Object.keys(icons()).filter((n) => !['arrow', 'check', 'menu'].includes(n))
+        .map((n) => `<button type="button" data-icon="${n}" data-path-icon="${p}" class="${v === n ? 'on' : ''}" title="${n}"><svg viewBox="0 0 24 24">${icons()[n]}</svg></button>`).join('')}</div></div>`;
+    case 'list': return `<div class="list" data-list="${p}">${label}${(v || []).map((it, i) => item(f, `${p}.${i}`, it, i, v.length)).join('')}
+        <button type="button" class="add" data-add="${p}">+ Thêm ${f.name || 'mục'}</button></div>`;
+  }
+  return '';
+}
+
+function item(f, p, it, i, n) {
+  const tools = `<div class="tools">
+    <button type="button" data-move="${p}" data-dir="-1" title="Lên" ${i === 0 ? 'disabled' : ''}>↑</button>
+    <button type="button" data-move="${p}" data-dir="1" title="Xuống" ${i === n - 1 ? 'disabled' : ''}>↓</button>
+    <button type="button" data-dup="${p}" title="Nhân bản">⧉</button>
+    <button type="button" class="del" data-del="${p}" title="Xoá">✕</button></div>`;
+  if (f.inline) return `<div class="item inline"><div class="row">${f.item.map((sf) =>
+    `<input type="text" data-path="${p}.${sf.k}" value="${esc(it[sf.k])}" placeholder="${esc(sf.ph || '')}">`).join('')}</div>${tools}</div>`;
+  return `<div class="item ${openItems.has(p) ? 'open' : ''}" data-item="${p}">
+    <div class="item-h" data-toggle="${p}"><span class="n">${i + 1}</span><span class="sum">${esc(summary(f, it) || `(${f.name || 'mục'} trống)`)}</span>${tools}</div>
+    <div class="item-b">${f.item.map((sf) => field(sf, p)).join('')}</div></div>`;
+}
+const summary = (f, it) => { const k = f.item.find((x) => x.t === 'text' || x.t === 'textarea')?.k; return k ? String(it[k] || '').split('\n')[0] : ''; };
+const icons = () => frame.contentWindow?.ICONS || {};
+
+/* ================= PREVIEW ================= */
+let raf = 0;
+function sendPreview() {
+  cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(() => frame.contentWindow?.postMessage({ type: 'content', content }, location.origin));
+}
+window.addEventListener('message', (e) => {
+  if (e.origin !== location.origin) return;
+  if (e.data?.type === 'ready') { sendPreview(); renderForm(); /* vẽ lại để có icon */ }
+  if (e.data?.type === 'select') selectPath(e.data.path);
+});
+
+// Từ preview -> mở đúng ô bên admin
+function selectPath(path) {
+  const parts = path.split('.');
+  openSecs.add(parts[0]);
+  for (let i = 1; i < parts.length; i++) if (/^\d+$/.test(parts[i])) openItems.add(parts.slice(0, i + 1).join('.'));
+  renderForm();
+  const el = side.querySelector(`[data-path="${CSS.escape(path)}"]`) || side.querySelector(`[data-drop="${CSS.escape(path)}"]`)
+    || side.querySelector(`[data-path-icon="${CSS.escape(path)}"]`)?.parentElement;
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (el.matches('input, textarea')) el.focus({ preventScroll: true });
+  el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200);
+}
+
+/* Thu phóng preview cho vừa khung theo thiết bị */
+let device = 1440;
+function fit() {
+  const stage = $('#stage'), wrap = $('#wrap');
+  const availW = stage.clientWidth - 32, availH = stage.clientHeight - 32;
+  const scale = Math.min(1, availW / device);
+  wrap.style.width = device + 'px';
+  wrap.style.height = availH / scale + 'px';
+  wrap.style.transform = `scale(${scale})`;
+}
+new ResizeObserver(fit).observe($('#stage'));
+document.querySelectorAll('[data-device]').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('[data-device]').forEach((x) => x.classList.toggle('on', x === b));
+  device = +b.dataset.device; fit();
+});
+
+/* ================= CHANGE TRACKING / UNDO ================= */
+function changed() {
+  const dirty = JSON.stringify(content) !== saved;
+  const st = $('#status');
+  st.textContent = dirty ? '● Chưa lưu' : '✓ Đã lưu';
+  st.className = 'status ' + (dirty ? 'dirty' : 'ok');
+  $('#save').classList.toggle('pulse', dirty);
+  $('#undo').disabled = !history.length && !typing;
+  sendPreview();
+}
+function flushTyping() { if (typing) { clearTimeout(typing); typing = null; snap = JSON.stringify(content); } }
+function structural(fn) { flushTyping(); history.push(snap); fn(); snap = JSON.stringify(content); renderForm(); changed(); }
+function typed() {
+  if (!typing) { history.push(snap); if (history.length > 100) history.shift(); }
+  clearTimeout(typing);
+  typing = setTimeout(() => { typing = null; snap = JSON.stringify(content); }, 700);
+  changed();
+}
+function undo() {
+  flushTyping();
+  if (!history.length) return;
+  content = JSON.parse(history.pop()); snap = JSON.stringify(content);
+  renderForm(); changed(); toast('Đã hoàn tác');
+}
+
+/* ================= EVENTS ================= */
+side.addEventListener('input', (e) => {
+  const el = e.target, p = el.dataset.path;
+  if (!p) return;
+  const val = el.type === 'checkbox' ? (el.hasAttribute('data-invert') ? !el.checked : el.checked) : el.value;
+  set(p, val);
+  // Đồng bộ các ô cùng path (ô màu + mã màu, ảnh + link ảnh)
+  side.querySelectorAll(`[data-path="${CSS.escape(p)}"]`).forEach((o) => { if (o !== el && o.type !== 'checkbox') o.value = val; });
+  const box = side.querySelector(`[data-drop="${CSS.escape(p)}"]`);
+  if (box) box.style.backgroundImage = `url('${val}')`;
+  const itemEl = el.closest('.item[data-item]');
+  if (itemEl) { const f = findField(itemEl.dataset.item.replace(/\.\d+$/, '')); itemEl.querySelector(':scope > .item-h .sum').textContent = summary(f, get(itemEl.dataset.item)) || '(trống)'; }
+  if (el.type === 'checkbox') { structuralRefresh(); return; }
+  typed();
+});
+function structuralRefresh() { history.push(snap); snap = JSON.stringify(content); renderForm(); changed(); }
+
+side.addEventListener('click', (e) => {
+  const t = e.target.closest('button, [data-open], [data-toggle]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.open) {
+    openSecs.has(d.open) ? openSecs.delete(d.open) : openSecs.add(d.open);
+    t.parentElement.classList.toggle('open');
+    if (openSecs.has(d.open)) frame.contentWindow?.postMessage({ type: 'focus', path: d.open }, location.origin);
+  } else if (d.toggle && !e.target.closest('.tools')) {
+    openItems.has(d.toggle) ? openItems.delete(d.toggle) : openItems.add(d.toggle);
+    t.parentElement.classList.toggle('open');
+    frame.contentWindow?.postMessage({ type: 'focus', path: d.toggle }, location.origin);
+  } else if (d.add) {
+    const f = findField(d.add);
+    structural(() => { const arr = get(d.add) || []; arr.push(blank(f.item)); set(d.add, arr); openItems.add(`${d.add}.${arr.length - 1}`); });
+  } else if (d.del || d.dup || d.move) {
+    const p = d.del || d.dup || d.move, listPath = p.replace(/\.\d+$/, ''), i = +p.split('.').pop();
+    structural(() => {
+      const arr = get(listPath);
+      if (d.del) arr.splice(i, 1);
+      if (d.dup) { arr.splice(i + 1, 0, structuredClone(arr[i])); openItems.add(`${listPath}.${i + 1}`); }
+      if (d.move) { const j = i + +d.dir; if (j >= 0 && j < arr.length) [arr[i], arr[j]] = [arr[j], arr[i]]; }
+      [...openItems].filter((x) => x.startsWith(listPath + '.')).forEach((x) => openItems.delete(x));
+    });
+    toast(d.del ? 'Đã xoá — bấm Hoàn tác nếu nhầm' : d.dup ? 'Đã nhân bản' : 'Đã đổi thứ tự');
+  } else if (d.upload) {
+    e.preventDefault(); pickFile(d.upload);
+  } else if (d.icon) {
+    structural(() => set(d.pathIcon, d.icon));
+  }
+});
+const blank = (fields) => Object.fromEntries(fields.map((f) => [f.k, f.t === 'list' ? [] : f.t === 'icon' ? 'star' : '']));
+
+side.addEventListener('focusin', (e) => {
+  const p = e.target.dataset?.path;
+  if (p) frame.contentWindow?.postMessage({ type: 'focus', path: p }, location.origin);
+});
+
+/* ================= UPLOAD ẢNH ================= */
+let uploadTarget = null;
+function pickFile(path) { uploadTarget = path; $('#file').value = ''; $('#file').click(); }
+$('#file').onchange = (e) => e.target.files[0] && uploadImage(uploadTarget, e.target.files[0]);
+side.addEventListener('dragover', (e) => { const b = e.target.closest('[data-drop]'); if (b) { e.preventDefault(); b.classList.add('drag'); } });
+side.addEventListener('dragleave', (e) => e.target.closest('[data-drop]')?.classList.remove('drag'));
+side.addEventListener('drop', (e) => {
+  const b = e.target.closest('[data-drop]');
+  if (!b) return;
+  e.preventDefault(); b.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) uploadImage(b.dataset.drop, file);
+});
+async function uploadImage(path, file) {
+  if (!file.type.startsWith('image/')) return toast('File này không phải ảnh', true);
+  if (file.size > 15 * 1024 * 1024) return toast('Ảnh quá lớn (tối đa 15MB)', true);
+  const box = side.querySelector(`[data-drop="${CSS.escape(path)}"]`);
+  box?.classList.add('loading');
+  try {
+    const data = await new Promise((ok, fail) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = fail; r.readAsDataURL(file); });
+    const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: file.name, data }) });
+    const out = await res.json();
+    if (!res.ok) throw new Error(out.error);
+    structural(() => set(path, out.url));
+    toast('Đã thay ảnh — nhớ bấm Lưu');
+  } catch (err) {
+    box?.classList.remove('loading');
+    toast('Tải ảnh thất bại: ' + err.message, true);
+  }
+}
+
+/* ================= LƯU ================= */
+async function save() {
+  flushTyping();
+  try {
+    const res = await fetch('/api/content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
+    if (!res.ok) throw new Error((await res.json()).error);
+    saved = JSON.stringify(content); changed(); toast('✓ Đã lưu! Trang thật đã cập nhật.');
+  } catch (err) { toast('Lưu thất bại: ' + err.message + ' (server còn chạy không?)', true); }
+}
+$('#save').onclick = save;
+$('#undo').onclick = undo;
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.target.matches('input, textarea')) { e.preventDefault(); undo(); }
+});
+window.addEventListener('beforeunload', (e) => { if (JSON.stringify(content) !== saved) { e.preventDefault(); e.returnValue = ''; } });
+
+let toastT;
+function toast(msg, err) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', 2600);
+}
+
+/* ================= KHỞI ĐỘNG ================= */
+(async () => {
+  try {
+    content = await (await fetch('content.json', { cache: 'no-store' })).json();
+  } catch {
+    side.innerHTML = '<div class="tip" style="background:#fee2e2;color:#991b1b">Không đọc được content.json. Hãy chạy <b>node server.js</b> (hoặc bấm đúp <b>start.bat</b>) rồi mở <b>http://localhost:3000/admin</b>.</div>';
+    return;
+  }
+  saved = snap = JSON.stringify(content);
+  renderForm(); changed();
+  frame.src = 'index.html?preview=1';
+})();
+</script>
+</body>
+</html>

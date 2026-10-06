@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loading…</title>
+<meta name="description" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #ED3833; --text: #313131; --muted: #535353; --soft: #F9F9F9;
+  --line: #E8E8E8; --white: #fff; --radius: 8px;
+  --heading: 'Archivo', 'Arial Black', system-ui, sans-serif;
+  --body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--body); color: var(--muted); background: var(--white); font-size: 18px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { overflow-wrap: break-word; font-family: var(--heading); font-stretch: 125%; font-weight: 700; color: var(--text); margin: 0; letter-spacing: -0.04em; }
+h1 { font-size: clamp(32px, 6vw, 72px); line-height: 1.15; }
+h2 { font-size: clamp(26px, 4vw, 48px); line-height: 1.17; }
+h3 { font-size: clamp(22px, 2.4vw, 32px); line-height: 1.2; }
+h4 { font-size: 22px; line-height: 1.25; letter-spacing: -0.03em; }
+p { margin: 0; }
+.container { max-width: 1280px; margin: 0 auto; padding-inline: 40px; }
+section { padding-block: 112px; }
+.soft { background: var(--soft); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 6px; font: 700 16px/1 var(--body); border: 1.5px solid transparent; cursor: pointer; transition: background .2s, color .2s, border-color .2s; white-space: nowrap; }
+.btn svg { width: 16px; height: 16px; transition: transform .25s; flex: none; }
+.btn:hover svg { transform: translateX(4px); }
+.btn-white { background: #fff; color: var(--text); }
+.btn-white:hover { background: var(--accent); color: #fff; }
+.btn-dark { background: var(--text); color: #fff; }
+.btn-dark:hover { background: var(--accent); }
+.btn-outline { border-color: var(--text); color: var(--text); }
+.btn-outline:hover { background: var(--text); color: #fff; }
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { filter: brightness(.92); }
+.link { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: var(--accent); }
+.link svg { width: 14px; height: 14px; transition: transform .25s; }
+.link:hover svg { transform: translateX(4px); }
+
+/* Header */
+.header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.header .container { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 24px; }
+.logo img { height: 40px; width: auto; }
+.nav { display: flex; gap: 28px; font-size: 15px; font-weight: 600; color: var(--text); }
+.nav a:hover { color: var(--accent); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header .btn { padding: 11px 18px; font-size: 15px; }
+.burger { display: none; background: none; border: 0; padding: 8px; cursor: pointer; color: var(--text); }
+.burger svg { width: 26px; height: 26px; }
+
+/* Hero */
+.hero { position: relative; min-height: min(88vh, 860px); display: flex; align-items: flex-end; padding-block: 96px; background: #222 center/cover no-repeat; color: #fff; }
+.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.6) 100%); }
+.hero .container { position: relative; width: 100%; }
+.hero h1 { color: #fff; max-width: 14ch; }
+.hero p { margin-top: 20px; max-width: 560px; font-size: 20px; color: rgba(255,255,255,.88); }
+.hero .btn { margin-top: 36px; }
+
+/* USP */
+.sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; margin-bottom: 56px; }
+.sec-head h2 { max-width: 26ch; }
+.usp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.usp-card { border-top: 2px solid var(--line); padding-top: 28px; }
+.icon { width: 52px; height: 52px; color: var(--accent); margin-bottom: 24px; }
+.icon svg { width: 100%; height: 100%; }
+.usp-card h4 { margin-bottom: 12px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 88px; }
+.stat-num { display: flex; align-items: baseline; gap: 10px; }
+.stat-num b { font-family: var(--heading); font-stretch: 125%; font-size: clamp(40px, 5vw, 64px); line-height: 1; color: var(--text); letter-spacing: -0.05em; }
+.stat-num span { font-weight: 700; color: var(--accent); font-size: 18px; }
+.stat hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0 14px; }
+
+/* Industries */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+.tab { font: 600 15px var(--body); padding: 12px 20px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; color: var(--text); cursor: pointer; transition: all .2s; }
+.tab:hover { border-color: var(--text); }
+.tab.active { background: var(--text); border-color: var(--text); color: #fff; }
+.panel { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; animation: fade .4s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } }
+.panel-img { border-radius: var(--radius); overflow: hidden; aspect-ratio: 5/4; background: var(--line); }
+.panel-img img { width: 100%; height: 100%; object-fit: cover; }
+.panel h3 { margin-bottom: 16px; }
+.features { list-style: none; padding: 0; margin: 28px 0; display: grid; gap: 14px; }
+.features li { display: flex; gap: 12px; align-items: center; color: var(--text); font-weight: 600; }
+.features svg { width: 22px; height: 22px; color: var(--accent); flex: none; }
+.products { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 28px; }
+.products small { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.products strong { color: var(--text); font-size: 18px; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Capabilities */
+.cap-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; }
+.cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.cap-card { background: var(--soft); border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; gap: 14px; transition: background .25s; }
+.cap-card:hover { background: #f1f1f1; }
+.cap-card .icon { width: 44px; height: 44px; margin-bottom: 8px; }
+.cap-card p { flex: 1; font-size: 16px; }
+.cap-img { border-radius: var(--radius); overflow: hidden; min-height: 420px; background: var(--line); }
+.cap-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Banner */
+.banner-box { background: var(--text); color: rgba(255,255,255,.8); border-radius: var(--radius); padding: 64px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; position: relative; overflow: hidden; }
+.banner-box::after { content: ""; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 50%; border: 40px solid var(--accent); opacity: .18; }
+.banner-box h3 { color: #fff; margin-bottom: 14px; }
+.banner-box > div { max-width: 640px; position: relative; z-index: 1; }
+.banner-box .btn { position: relative; z-index: 1; }
+
+/* FAQ */
+.faq-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
+.faq-wrap h2 { position: sticky; top: 120px; }
+.qa { border-bottom: 1px solid var(--line); }
+.qa button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 0; background: none; border: 0; text-align: left; cursor: pointer; font: 700 19px/1.35 var(--body); color: var(--text); }
+.qa button i { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; position: relative; transition: transform .25s, background .25s; }
+.qa button i::before, .qa button i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; background: currentColor; transform: translate(-50%, -50%); }
+.qa button i::after { transform: translate(-50%, -50%) rotate(90deg); transition: opacity .2s; }
+.qa.open button i { background: var(--accent); border-color: var(--accent); color: #fff; }
+.qa.open button i::after { opacity: 0; }
+.qa .ans { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.qa.open .ans { grid-template-rows: 1fr; }
+.qa .ans > div { overflow: hidden; }
+.qa .ans p { padding-bottom: 24px; font-size: 17px; }
+
+/* Footer */
+.footer { background: var(--soft); padding-block: 80px 32px; }
+.foot-cta { background: #fff; border-radius: var(--radius); padding: 40px; display: flex; justify-content: space-between; align-items: center; gap: 32px; flex-wrap: wrap; margin-bottom: 72px; }
+.foot-cta p { margin-top: 8px; }
+.foot-grid { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 40px; }
+.foot-logo img { height: 48px; width: auto; margin-bottom: 28px; }
+.addr { font-size: 15px; margin-bottom: 20px; }
+.addr strong { display: block; color: var(--text); margin-bottom: 6px; }
+.contact { font-size: 15px; display: grid; gap: 4px; }
+.contact a:hover, .foot-col a:hover { color: var(--accent); }
+.foot-col h5 { font: 800 13px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin: 0 0 20px; }
+.foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 15px; }
+.copyright { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 24px; font-size: 14px; }
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* Preview mode: highlight editable */
+body.preview [data-edit] { cursor: pointer; }
+body.preview .panel { animation: none; }
+body.preview [data-edit]:hover { outline: 2px dashed var(--accent); outline-offset: 3px; }
+body.preview .flash { outline: 3px solid var(--accent) !important; outline-offset: 4px; transition: outline-color 1s; }
+
+/* Responsive */
+@media (max-width: 1199px) {
+  .nav { gap: 18px; font-size: 14px; }
+  .cap-wrap { grid-template-columns: 1fr; }
+  .cap-img { min-height: 320px; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 1023px) {
+  .burger { display: block; }
+  .nav { display: none; position: absolute; top: 76px; left: 0; right: 0; background: #fff; flex-direction: column; padding: 16px 20px 24px; gap: 0; border-bottom: 1px solid var(--line); }
+  .nav a { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .header.open .nav { display: flex; }
+  .panel, .faq-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .faq-wrap h2 { position: static; }
+}
+@media (max-width: 809px) {
+  body { font-size: 16px; }
+  h3 { font-size: 22px; } h4 { font-size: 19px; }
+  .panel > *, .faq-wrap > *, .cap-wrap > * { min-width: 0; }
+  .container { padding-inline: 20px; }
+  section { padding-block: 72px; }
+  .header .btn { display: none; }
+  .usp-grid, .stats, .cap-grid { grid-template-columns: 1fr; }
+  .stats { margin-top: 56px; gap: 32px; }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; margin-inline: -20px; padding-inline: 20px; scrollbar-width: none; }
+  .tab { flex: none; }
+  .banner-box, .foot-cta { padding: 32px 24px; }
+  .foot-grid { grid-template-columns: 1fr; }
+  .hero { padding-block: 64px; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const ICONS = window.ICONS = {
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  check: '<circle cx="12" cy="12" r="10" fill="currentColor" opacity=".12"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  users: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M17.5 14.5c2.2.3 3.6 1.9 4 4.5"/></g>',
+  truck: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 6h12v10H2zM14 9h4.5l3.5 3.5V16h-8z"/><circle cx="6" cy="17.5" r="2" fill="#fff"/><circle cx="17.5" cy="17.5" r="2" fill="#fff"/></g>',
+  factory: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 21V10l6 4v-4l6 4v-4l6 4V3h2v18z"/><path d="M6 17h2M11 17h2M16 17h2"/></g>',
+  flask: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7 15h10"/></g>',
+  grid: '<g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></g>',
+  leaf: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-9 6-15 16-16-1 10-7 16-16 16z"/><path d="M4 20l8-8"/></g>',
+  shield: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></g>',
+  drop: '<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5S5 10 5 14.5a7 7 0 0 0 14 0C19 10 12 2.5 12 2.5z"/><path d="M9 15a3 3 0 0 0 3 3" stroke-linecap="round"/></g>',
+  globe: '<g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.8 3 4 6 4 9.5s-1.2 6.5-4 9.5c-2.8-3-4-6-4-9.5s1.2-6.5 4-9.5z"/></g>',
+  star: '<path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>',
+};
+const svg = (name, vb = 24) => `<svg viewBox="0 0 ${vb} ${vb}" aria-hidden="true">${ICONS[name] || ICONS.star}</svg>`;
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nl = (s) => esc(s).replace(/\n/g, '<br>');
+const ed = (path) => ` data-edit="${path}"`;
+const arrow = svg('arrow');
+
+const PREVIEW = new URLSearchParams(location.search).has('preview');
+const state = { tab: 0, faq: 0 };
+let content = null;
+
+function render(c) {
+  content = c;
+  const t = c.theme || {};
+  const root = document.documentElement.style;
+  ['accent', 'text', 'muted', 'soft'].forEach((k) => t[k] && root.setProperty('--' + k, t[k]));
+  document.title = c.seo?.title || '';
+  document.querySelector('meta[name=description]').content = c.seo?.description || '';
+
+  const h = c.header, hero = c.hero, u = c.usp, ind = c.industries, cap = c.capabilities, b = c.banner, f = c.faq, ft = c.footer;
+  state.tab = Math.min(state.tab, Math.max(0, (ind.tabs || []).length - 1));
+  const tab = (ind.tabs || [])[state.tab];
+  const T = `industries.tabs.${state.tab}`;
+
+  document.getElementById('app').innerHTML = `
+  <header class="header" id="top">
+    <div class="container">
+      <a href="#top" class="logo"${ed('header.logo')}><img src="${esc(h.logo)}" alt="Logo"></a>
+      <nav class="nav">${(h.nav || []).map((n, i) => `<a href="${esc(n.href)}"${ed(`header.nav.${i}.label`)}>${esc(n.label)}</a>`).join('')}</nav>
+      <div class="header-right">
+        ${h.ctaLabel ? `<a class="btn btn-accent" href="${esc(h.ctaHref)}"${ed('header.ctaLabel')}>${esc(h.ctaLabel)} ${arrow}</a>` : ''}
+        <button class="burger" aria-label="Menu" onclick="this.closest('.header').classList.toggle('open')">${svg('menu')}</button>
+      </div>
+    </div>
+  </header>
+
+  ${hero.hidden ? '' : `
+  <section class="hero" id="hero" style="background-image:url('${esc(hero.image)}')"${ed('hero.image')}>
+    <div class="container">
+      <h1 class="reveal"${ed('hero.title')}>${nl(hero.title)}</h1>
+      ${hero.subtitle ? `<p class="reveal"${ed('hero.subtitle')}>${nl(hero.subtitle)}</p>` : ''}
+      ${hero.buttonLabel ? `<a class="btn btn-white reveal" href="${esc(hero.buttonHref)}"${ed('hero.buttonLabel')}>${esc(hero.buttonLabel)} ${arrow}</a>` : ''}
+    </div>
+  </section>`}
+
+  ${u.hidden ? '' : `
+  <section id="usp">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2${ed('usp.title')}>${nl(u.title)}</h2>
+        ${u.buttonLabel ? `<a class="btn btn-outline" href="${esc(u.buttonHref)}"${ed('usp.buttonLabel')}>${esc(u.buttonLabel)} ${arrow}</a>` : ''}
+      </div>
+      <div class="usp-grid">${(u.items || []).map((it, i) => `
+        <div class="usp-card reveal">
+          <div class="icon"${ed(`usp.items.${i}.icon`)}>${svg(it.icon)}</div>
+          <h4${ed(`usp.items.${i}.title`)}>${nl(it.title)}</h4>
+          <p${ed(`usp.items.${i}.text`)}>${nl(it.text)}</p>
+        </div>`).join('')}
+      </div>
+      <div class="stats">${(u.stats || []).map((s, i) => `
+        <div class="stat reveal">
+          <div class="stat-num"><b data-count="${esc(s.value)}"${ed(`usp.stats.${i}.value`)}>${esc(s.value)}</b><span${ed(`usp.stats.${i}.unit`)}>${esc(s.unit)}</span></div>
+          <hr>
+          <p${ed(`usp.stats.${i}.label`)}>${esc(s.label)}</p>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>`}
+
+  ${ind.hidden ? '' : `
+  <section id="industries" class="soft">
+    <div class="container">
+      <div class="sec-head reveal"><h2${ed('industries.title')}>${nl(ind.title)}</h2></div>
+      <div class="tabs" role="tablist">${(ind.tabs || []).map((tb, i) => `
+        <button class="tab ${i === state.tab ? 'active' : ''}" data-tab="${i}"${ed(`industries.tabs.${i}.name`)}>${esc(tb.name)}</button>`).join('')}
+      </div>
+      ${tab ? `
+      <div class="panel" key="${state.tab}">
+        <div class="panel-img"${ed(`${T}.image`)}><img src="${esc(tab.image)}" alt="${esc(tab.name)}"></div>
+        <div>
+          <h3${ed(`${T}.heading`)}>${nl(tab.heading)}</h3>
+          <p${ed(`${T}.text`)}>${nl(tab.text)}</p>
+          <ul class="features">${(tab.features || []).map((ft, i) => `<li${ed(`${T}.features.${i}.text`)}>${svg('check')}${esc(ft.text)}</li>`).join('')}</ul>
+          ${tab.products ? `<div class="products"${ed(`${T}.products`)}><small>${esc(tab.name)}</small><strong>${esc(tab.products)}</strong></div>` : ''}
+          <div class="ctas">
+            ${tab.button1 ? `<a class="btn btn-dark" href="${esc(tab.button1Href)}"${ed(`${T}.button1`)}>${esc(tab.button1)} ${arrow}</a>` : ''}
+            ${tab.button2 ? `<a class="btn btn-outline" href="${esc(tab.button2Href)}"${ed(`${T}.button2`)}>${esc(tab.button2)} ${arrow}</a>` : ''}
+          </div>
+        </div>
+      </div>` : ''}
+    </div>
+  </section>`}
+
+  ${cap.hidden ? '' : `
+  <section id="capabilities">
+    <div class="container">
+      <div class="sec-head reveal"><h2${ed('capabilities.title')}>${nl(cap.title)}</h2></div>
+      <div class="cap-wrap">
+        <div class="cap-grid">${(cap.cards || []).map((cd, i) => `
+          <div class="cap-card reveal">
+            <div class="icon"${ed(`capabilities.cards.${i}.icon`)}>${svg(cd.icon)}</div>
+            <h4${ed(`capabilities.cards.${i}.title`)}>${nl(cd.title)}</h4>
+            <p${ed(`capabilities.cards.${i}.text`)}>${nl(cd.text)}</p>
+            ${cd.linkLabel ? `<a class="link" href="${esc(cd.href)}"${ed(`capabilities.cards.${i}.linkLabel`)}>${esc(cd.linkLabel)} ${arrow}</a>` : ''}
+          </div>`).join('')}
+        </div>
+        <div class="cap-img reveal"${ed('capabilities.image')}><img src="${esc(cap.image)}" alt=""></div>
+      </div>
+    </div>
+  </section>`}
+
+  ${b.hidden ? '' : `
+  <section id="banner" style="padding-top:0">
+    <div class="container">
+      <div class="banner-box reveal">
+        <div>
+          <h3${ed('banner.title')}>${nl(b.title)}</h3>
+          <p${ed('banner.text')}>${nl(b.text)}</p>
+        </div>
+        ${b.buttonLabel ? `<a class="btn btn-accent" href="${esc(b.buttonHref)}"${ed('banner.buttonLabel')}>${esc(b.buttonLabel)} ${arrow}</a>` : ''}
+      </div>
+    </div>
+  </section>`}
+
+  ${f.hidden ? '' : `
+  <section id="faq" style="padding-top:0">
+    <div class="container faq-wrap">
+      <h2 class="reveal"${ed('faq.title')}>${nl(f.title)}</h2>
+      <div class="reveal">${(f.items || []).map((q, i) => `
+        <div class="qa ${i === state.faq ? 'open' : ''}">
+          <button data-faq="${i}"${ed(`faq.items.${i}.q`)}>${esc(q.q)}<i></i></button>
+          <div class="ans"><div><p${ed(`faq.items.${i}.a`)}>${nl(q.a)}</p></div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </section>`}
+
+  <footer class="footer" id="footer">
+    <div class="container">
+      ${ft.ctaTitle ? `
+      <div class="foot-cta">
+        <div><h4${ed('footer.ctaTitle')}>${esc(ft.ctaTitle)}</h4><p${ed('footer.ctaText')}>${nl(ft.ctaText)}</p></div>
+        ${ft.ctaButton ? `<a class="btn btn-dark" href="${esc(ft.ctaHref)}"${ed('footer.ctaButton')}>${esc(ft.ctaButton)} ${arrow}</a>` : ''}
+      </div>` : ''}
+      <div class="foot-grid">
+        <div>
+          <div class="foot-logo"${ed('footer.logo')}><img src="${esc(ft.logo)}" alt="Logo"></div>
+          ${(ft.addresses || []).map((a, i) => `<div class="addr"${ed(`footer.addresses.${i}.lines`)}><strong>${esc(a.title)}</strong>${nl(a.lines)}</div>`).join('')}
+          <div class="contact">
+            ${ft.email ? `<a href="mailto:${esc(ft.email)}"${ed('footer.email')}>${esc(ft.email)}</a>` : ''}
+            ${ft.phone ? `<a href="tel:${esc(ft.phone.replace(/[^+\d]/g, ''))}"${ed('footer.phone')}>${esc(ft.phone)}</a>` : ''}
+          </div>
+        </div>
+        ${(ft.columns || []).map((col, ci) => `
+        <div class="foot-col">
+          <h5${ed(`footer.columns.${ci}.title`)}>${esc(col.title)}</h5>
+          <ul>${(col.links || []).map((l, li) => `<li><a href="${esc(l.href)}"${ed(`footer.columns.${ci}.links.${li}.label`)}>${esc(l.label)}</a></li>`).join('')}</ul>
+        </div>`).join('')}
+      </div>
+      <div class="copyright"${ed('footer.copyright')}>${esc(ft.copyright)}</div>
+    </div>
+  </footer>`;
+
+  setupEffects();
+}
+
+/* ---------- Interactions ---------- */
+document.addEventListener('click', (e) => {
+  const tabBtn = e.target.closest('[data-tab]');
+  if (tabBtn) { state.tab = +tabBtn.dataset.tab; render(content); }
+  const faqBtn = e.target.closest('[data-faq]');
+  if (faqBtn) {
+    const i = +faqBtn.dataset.faq;
+    state.faq = state.faq === i ? -1 : i;
+    document.querySelectorAll('.qa').forEach((el, j) => el.classList.toggle('open', j === state.faq));
+  }
+  if (e.target.closest('.nav a')) document.querySelector('.header')?.classList.remove('open');
+});
+
+let observer;
+function setupEffects() {
+  const els = document.querySelectorAll('.reveal');
+  if (PREVIEW || !('IntersectionObserver' in window)) { els.forEach((el) => el.classList.add('in')); return; }
+  observer?.disconnect();
+  observer = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('in');
+    en.target.querySelectorAll('[data-count]').forEach(countUp);
+    observer.unobserve(en.target);
+  }), { threshold: 0.15 });
+  els.forEach((el) => observer.observe(el));
+}
+
+function countUp(el) {
+  const raw = el.dataset.count, m = raw.match(/^([\d.,]+)(.*)$/);
+  if (!m) return;
+  const target = parseFloat(m[1].replace(/,/g, '')), suffix = m[2], start = performance.now(), dur = 1400;
+  const step = (now) => {
+    const p = Math.min(1, (now - start) / dur), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    el.textContent = v.toLocaleString('en-US').replace(/,/g, m[1].includes(',') ? ',' : '') + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ---------- Preview bridge (dùng bởi admin.html) ---------- */
+if (PREVIEW) {
+  document.body.classList.add('preview');
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin) return;
+    const msg = e.data || {};
+    if (msg.type === 'content') render(msg.content);
+    if (msg.type === 'focus') focusPath(msg.path);
+  });
+  // Bấm vào chữ/ảnh trong preview -> nhảy tới ô sửa tương ứng bên admin
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-edit]');
+    if (e.target.closest('a')) e.preventDefault();
+    if (el) parent.postMessage({ type: 'select', path: el.dataset.edit }, location.origin);
+  }, true);
+  parent.postMessage({ type: 'ready' }, location.origin);
+} else {
+  fetch('content.json', { cache: 'no-store' }).then((r) => r.json()).then(render)
+    .catch(() => { document.getElementById('app').innerHTML = '<p style="padding:40px">Không đọc được content.json. Hãy mở trang qua server (node server.js).</p>'; });
+}
+
+function focusPath(path) {
+  let m = path.match(/^industries\.tabs\.(\d+)/);
+  if (m && +m[1] !== state.tab) { state.tab = +m[1]; render(content); }
+  m = path.match(/^faq\.items\.(\d+)/);
+  if (m && +m[1] !== state.faq) { state.faq = +m[1]; render(content); }
+  // Tìm phần tử khớp nhất: đúng path, hoặc path cha gần nhất
+  let p = path, el = null;
+  while (p && !(el = document.querySelector(`[data-edit="${CSS.escape(p)}"]`)) && p.includes('.')) {
+    const cands = document.querySelectorAll(`[data-edit^="${CSS.escape(p)}."]`);
+    if (cands.length) { el = cands[0]; break; }
+    p = p.slice(0, p.lastIndexOf('.'));
+  }
+  if (!el) {
+    const sec = document.getElementById(path.split('.')[0]);
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.querySelectorAll('.flash').forEach((x) => x.classList.remove('flash'));
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1400);
+}
+</script>
+</body>
+</html>
