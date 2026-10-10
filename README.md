@@ -47,7 +47,11 @@ Windows: điền `.env` rồi bấm đúp `start.bat`.
 | `login.html` | Trang đăng nhập |
 | `content.json` | Nội dung mặc định, chỉ nạp vào DB lần đầu |
 
-**Bảng trong DB:** `users`, `sessions`, `images` (ảnh lưu dạng nhị phân), `content_versions` (mỗi lần Lưu là 1 phiên bản, giữ 30 bản gần nhất).
+**Bảng trong DB:** `users`, `sessions`, `images` (ảnh lưu dạng nhị phân), `leads` (khách để lại thông tin qua popup báo giá), `content_versions` (mỗi lần Lưu là 1 phiên bản, giữ 30 bản gần nhất).
+
+**Trang chi tiết:** mỗi mục trong admin → *Trang chi tiết* có đường dẫn `/p/<slug>`. Thẻ Năng lực thứ N có link trống hoặc `#` tự trỏ tới trang chi tiết thứ N.
+
+**Popup báo giá:** mọi nút/link có href `#bao-gia` mở popup (gọi, Zalo, form). Thông tin khách xem ở nút 📥 Khách trong admin.
 
 Khôi phục bản cũ (chạy trong tab **Data → Query** của Postgres trên Railway):
 ```sql

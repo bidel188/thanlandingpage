@@ -7,6 +7,7 @@
   },
   "seo": {
     "title": "Nhà sản xuất than hoạt tính gáo dừa | Ivar Carbons",
+    "siteName": "Ivar Carbons",
     "description": "Than hoạt tính gáo dừa cao cấp cho xử lý nước, lọc không khí, thu hồi vàng, dầu khí và chế biến thực phẩm. Tùy chỉnh theo yêu cầu, chất lượng ổn định, cung ứng toàn cầu."
   },
   "header": {
@@ -160,6 +161,110 @@
       { "q": "Có thể tùy chỉnh than theo yêu cầu không?", "a": "Có. Chúng tôi tùy chỉnh độ hoạt tính (CTC/iod), kích thước hạt, độ cứng, độ tro và pH, đồng thời cung cấp các dòng than rửa axit hoặc than tẩm theo ứng dụng của bạn." },
       { "q": "Sản phẩm có chứng nhận không?", "a": "Sản phẩm được sản xuất theo hệ thống quản lý chất lượng có kiểm soát; chúng tôi cung cấp phiếu kiểm nghiệm và bảng thông số cho từng lô hàng khi có yêu cầu." },
       { "q": "Than hoạt tính được dùng để làm gì?", "a": "Xử lý nước và nước thải, lọc khí và không khí, thu hồi vàng, chế biến dầu khí, làm sạch thực phẩm và đồ uống, cùng nhiều ứng dụng khác." }
+    ]
+  },
+  "pages": {
+    "parentLabel": "Năng lực",
+    "relatedTitle": "Tìm hiểu thêm",
+    "asideButton": "Nhận báo giá",
+    "items": [
+      {
+        "slug": "chuyen-mon-ve-carbon",
+        "icon": "flask",
+        "title": "Chuyên môn về Carbon",
+        "subtitle": "Am hiểu đặc tính, chủng loại và thông số than hoạt tính, hỗ trợ lựa chọn vật liệu phù hợp với từng yêu cầu xử lý.",
+        "image": "",
+        "intro": "Mỗi hệ thống xử lý có đặc thù riêng về chất ô nhiễm, lưu lượng và điều kiện vận hành. Hiểu rõ bản chất của từng dòng than hoạt tính giúp chọn đúng vật liệu ngay từ đầu, tránh lãng phí và đảm bảo hiệu quả xử lý lâu dài.",
+        "sections": [
+          { "heading": "Hiểu đúng từng dòng than", "text": "Than gáo dừa, than gỗ, than than đá… mỗi loại có cấu trúc lỗ xốp khác nhau. Than gáo dừa giàu vi mao quản, phù hợp hấp phụ phân tử nhỏ như clo, VOC, mùi; than có nhiều mao quản trung bình phù hợp xử lý màu và phân tử lớn hơn.", "image": "" },
+          { "heading": "Đọc hiểu thông số kỹ thuật", "text": "Chỉ số iod, CTC, diện tích bề mặt, độ cứng, độ tro, độ ẩm và kích thước hạt quyết định hiệu suất thực tế. Chúng tôi giúp bạn hiểu ý nghĩa từng thông số và mức nào là phù hợp cho ứng dụng của mình.", "image": "" },
+          { "heading": "Dạng hạt, viên, bột hay tổ ong", "text": "Than hạt và viên nén dùng cho cột lọc cố định; than bột châm trực tiếp cho xử lý theo mẻ; than tổ ong phù hợp hệ xử lý khí lưu lượng lớn, trở lực thấp. Lựa chọn đúng dạng giúp tối ưu chi phí vận hành.", "image": "" }
+        ],
+        "highlightsTitle": "Chúng tôi hỗ trợ",
+        "highlights": [
+          { "text": "Tư vấn chọn dòng than theo chất cần xử lý" },
+          { "text": "Giải thích thông số kỹ thuật dễ hiểu" },
+          { "text": "So sánh các phương án theo chi phí vận hành" },
+          { "text": "Cung cấp mẫu thử khi cần" }
+        ],
+        "ctaTitle": "Chưa chắc nên dùng loại than nào?",
+        "ctaText": "Gửi thông tin hệ thống, chúng tôi sẽ đề xuất dòng than và thông số phù hợp.",
+        "ctaLabel": "Nhận tư vấn",
+        "ctaHref": "#bao-gia"
+      },
+      {
+        "slug": "cung-ung-logistics",
+        "icon": "truck",
+        "title": "Cung ứng & Logistics",
+        "subtitle": "Chủ động điều phối nguồn hàng, kho vận và giao nhận, đáp ứng linh hoạt về sản lượng, quy cách và tiến độ.",
+        "image": "",
+        "intro": "Với nhà máy và hệ thống xử lý, gián đoạn vật tư đồng nghĩa với gián đoạn vận hành. Chúng tôi chủ động nguồn hàng và tổ chức giao nhận để than hoạt tính luôn sẵn sàng khi bạn cần.",
+        "sections": [
+          { "heading": "Nguồn hàng chủ động", "text": "Duy trì nguồn cung ổn định với nhiều dòng than và quy cách khác nhau, giúp đáp ứng cả đơn hàng thường xuyên lẫn nhu cầu phát sinh.", "image": "" },
+          { "heading": "Linh hoạt sản lượng và quy cách", "text": "Từ đơn hàng nhỏ để chạy thử đến đơn hàng định kỳ số lượng lớn; đóng gói theo bao, bao jumbo hoặc theo yêu cầu riêng của từng công trình.", "image": "" },
+          { "heading": "Giao nhận đúng tiến độ", "text": "Lên kế hoạch giao hàng theo lịch thay than của hệ thống, phối hợp vận chuyển đến tận nhà máy hoặc công trình, hạn chế thời gian dừng máy.", "image": "" }
+        ],
+        "highlightsTitle": "Điểm nổi bật",
+        "highlights": [
+          { "text": "Nguồn hàng ổn định, nhiều quy cách" },
+          { "text": "Đóng gói theo yêu cầu" },
+          { "text": "Giao hàng theo lịch vận hành" },
+          { "text": "Hỗ trợ đơn hàng định kỳ" }
+        ],
+        "ctaTitle": "Cần lên kế hoạch cung ứng định kỳ?",
+        "ctaText": "Cho chúng tôi biết sản lượng và lịch thay than, chúng tôi sẽ đề xuất phương án cung ứng phù hợp.",
+        "ctaLabel": "Nhận báo giá",
+        "ctaHref": "#bao-gia"
+      },
+      {
+        "slug": "chat-luong-nhat-quan",
+        "icon": "grid",
+        "title": "Chất lượng nhất quán",
+        "subtitle": "Kiểm soát các thông số quan trọng giữa các lô hàng, đảm bảo tính ổn định và đồng nhất trong quá trình sử dụng.",
+        "image": "",
+        "intro": "Hiệu quả xử lý chỉ ổn định khi vật liệu ổn định. Chúng tôi chú trọng kiểm soát thông số giữa các lô hàng để hệ thống của bạn vận hành đều đặn, không phải điều chỉnh liên tục.",
+        "sections": [
+          { "heading": "Kiểm soát thông số then chốt", "text": "Các chỉ tiêu như chỉ số iod/CTC, độ cứng, độ tro, độ ẩm và phân bố kích thước hạt được theo dõi cho từng lô, đảm bảo bám sát thông số đã cam kết.", "image": "" },
+          { "heading": "Hồ sơ rõ ràng cho từng lô", "text": "Cung cấp phiếu kết quả kiểm tra (COA) và bảng thông số kỹ thuật khi có yêu cầu, giúp bạn dễ dàng đối chiếu và lưu hồ sơ chất lượng.", "image": "" },
+          { "heading": "Ổn định khi sử dụng lâu dài", "text": "Độ đồng nhất giữa các lô giúp thời gian sử dụng và chu kỳ thay than dễ dự đoán, thuận lợi cho kế hoạch bảo trì và kiểm soát chi phí.", "image": "" }
+        ],
+        "highlightsTitle": "Cam kết",
+        "highlights": [
+          { "text": "Thông số ổn định giữa các lô" },
+          { "text": "COA và bảng thông số khi có yêu cầu" },
+          { "text": "Hỗ trợ đối chiếu chất lượng" },
+          { "text": "Chu kỳ thay than dễ dự đoán" }
+        ],
+        "ctaTitle": "Cần thông số kỹ thuật chi tiết?",
+        "ctaText": "Liên hệ để nhận bảng thông số và COA của dòng than bạn quan tâm.",
+        "ctaLabel": "Nhận thông số",
+        "ctaHref": "#bao-gia"
+      },
+      {
+        "slug": "giai-phap-theo-ung-dung",
+        "icon": "factory",
+        "title": "Giải pháp theo ứng dụng",
+        "subtitle": "Tư vấn lựa chọn dòng than hoạt tính, quy cách và thông số phù hợp với đặc tính dòng xử lý và điều kiện vận hành thực tế.",
+        "image": "",
+        "intro": "Không có một loại than phù hợp cho mọi hệ thống. Chúng tôi bắt đầu từ chính bài toán của bạn — chất cần xử lý, lưu lượng, thiết bị hiện có — để đề xuất giải pháp sát với thực tế vận hành.",
+        "sections": [
+          { "heading": "Khảo sát nhu cầu xử lý", "text": "Tìm hiểu nguồn nước hoặc dòng khí, thành phần ô nhiễm, tiêu chuẩn đầu ra và điều kiện vận hành để xác định đúng yêu cầu kỹ thuật.", "image": "" },
+          { "heading": "Đề xuất dòng than và quy cách", "text": "Đề xuất loại than, kích thước hạt, lượng sử dụng và cách nạp phù hợp với thiết bị hiện có như cột lọc, tháp hấp phụ hay hệ châm bột.", "image": "" },
+          { "heading": "Đồng hành trong vận hành", "text": "Hỗ trợ theo dõi hiệu quả sau khi đưa vào sử dụng, tư vấn thời điểm thay than và điều chỉnh khi điều kiện vận hành thay đổi.", "image": "" }
+        ],
+        "highlightsTitle": "Ứng dụng tiêu biểu",
+        "highlights": [
+          { "text": "Lọc nước và xử lý nước thải" },
+          { "text": "Xử lý khí thải, mùi và VOC" },
+          { "text": "Dầu khí, hóa dầu" },
+          { "text": "Thu hồi vàng, kim loại quý" },
+          { "text": "Thực phẩm và đồ uống" }
+        ],
+        "ctaTitle": "Hãy kể cho chúng tôi về hệ thống của bạn",
+        "ctaText": "Chia sẻ ứng dụng và sản lượng, chúng tôi sẽ đề xuất giải pháp và báo giá phù hợp.",
+        "ctaLabel": "Nhận tư vấn",
+        "ctaHref": "#bao-gia"
+      }
     ]
   },
   "quote": {

@@ -143,6 +143,39 @@ section { padding-block: 112px; }
 .foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 15px; }
 .copyright { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 24px; font-size: 14px; }
 
+/* Trang chi tiết (/p/...) */
+.page-hero { position: relative; min-height: 440px; display: flex; align-items: flex-end; padding-block: 120px 72px; background: #2a2a2a center/cover no-repeat; color: #fff; }
+.page-hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.72) 100%); }
+.page-hero .container { position: relative; width: 100%; }
+.page-hero h1 { color: #fff; font-size: clamp(30px, 4vw, 52px); }
+.page-hero p { margin-top: 16px; max-width: 760px; font-size: 19px; color: rgba(255,255,255,.88); }
+.crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; color: rgba(255,255,255,.72); margin-bottom: 18px; }
+.crumbs a:hover { color: #fff; }
+.page-body { padding-block: 88px; }
+.page-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 64px; align-items: start; }
+.lead { font-size: 21px; line-height: 1.6; color: var(--text); margin-bottom: 40px; }
+.page-sec { padding-block: 32px; border-top: 1px solid var(--line); }
+.page-sec h3 { font-size: clamp(20px, 2vw, 26px); margin-bottom: 12px; }
+.page-sec p { font-size: 17px; line-height: 1.7; }
+.page-sec img { width: 100%; border-radius: var(--radius); margin-bottom: 24px; }
+.page-aside { position: sticky; top: 100px; }
+.aside-card { background: var(--soft); border-radius: var(--radius); padding: 28px; display: grid; gap: 18px; }
+.aside-card h4 { font-size: 19px; }
+.aside-card .features { margin: 0; }
+.aside-card .features li { font-size: 15px; align-items: flex-start; }
+.aside-card .btn { justify-content: center; white-space: normal; text-align: center; }
+.aside-phone { text-align: center; font-weight: 700; color: var(--text); }
+.aside-phone:hover { color: var(--accent); }
+.related { padding-block: 88px; }
+.related h2 { margin-bottom: 40px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.related .cap-card { background: #fff; }
+.related .cap-card:hover { background: #fff; box-shadow: 0 8px 30px rgba(0,0,0,.07); }
+.page-cta { padding-block: 0 88px; }
+.related + .page-cta { padding-top: 88px; }
+.not-found { min-height: 60vh; display: grid; place-items: center; text-align: center; padding: 120px 20px; }
+.not-found p { margin: 12px 0 28px; }
+
 /* Popup báo giá */
 .q-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.55); display: grid; place-items: center; padding: 16px; animation: qfade .2s ease; }
 @keyframes qfade { from { opacity: 0; } }
@@ -203,6 +236,8 @@ body.preview .flash { outline: 3px solid var(--accent) !important; outline-offse
   .header.open .nav { display: flex; }
   .panel, .faq-wrap { grid-template-columns: 1fr; gap: 32px; }
   .faq-wrap h2 { position: static; }
+  .page-grid { grid-template-columns: 1fr; gap: 40px; }
+  .page-aside { position: static; }
 }
 @media (max-width: 809px) {
   body { font-size: 16px; }
@@ -218,6 +253,9 @@ body.preview .flash { outline: 3px solid var(--accent) !important; outline-offse
   .banner-box, .foot-cta { padding: 32px 24px; }
   .foot-grid { grid-template-columns: 1fr; }
   .hero { padding-block: 64px; }
+  .page-hero { min-height: 320px; padding-block: 96px 48px; }
+  .page-body, .related { padding-block: 56px; }
+  .lead { font-size: 18px; }
 }
 </style>
 </head>
@@ -248,7 +286,8 @@ const ed = (path) => ` data-edit="${path}"`;
 const arrow = svg('arrow');
 
 const PREVIEW = new URLSearchParams(location.search).has('preview');
-const state = { tab: 0, faq: 0, quoteOpen: false, quoteSent: false };
+const PAGE_SLUG = window.__PAGE__ || null; // server đặt khi mở /p/<slug>
+const state = { tab: 0, faq: 0, quoteOpen: false, quoteSent: false, page: null };
 let content = null;
 
 function render(c) {
@@ -256,8 +295,13 @@ function render(c) {
   const t = c.theme || {};
   const root = document.documentElement.style;
   ['accent', 'text', 'muted', 'soft'].forEach((k) => t[k] && root.setProperty('--' + k, t[k]));
-  document.title = c.seo?.title || '';
-  document.querySelector('meta[name=description]').content = c.seo?.description || '';
+  const pages = c.pages?.items || [];
+  if (PAGE_SLUG && state.page == null) state.page = pages.findIndex((p) => p.slug === PAGE_SLUG);
+  const page = state.page != null && state.page >= 0 ? pages[state.page] : null;
+  const notFound = PAGE_SLUG && !PREVIEW && !page;
+  const site = String(c.seo?.siteName || '').trim();
+  document.title = page ? (site ? `${page.title} | ${site}` : page.title) : c.seo?.title || '';
+  document.querySelector('meta[name=description]').content = page ? page.subtitle || '' : c.seo?.description || '';
 
   const h = c.header, hero = c.hero, u = c.usp, ind = c.industries, cap = c.capabilities, b = c.banner, f = c.faq, ft = c.footer;
   state.tab = Math.min(state.tab, Math.max(0, (ind.tabs || []).length - 1));
@@ -276,6 +320,9 @@ function render(c) {
     </div>
   </header>
 
+  ${notFound ? `
+  <section class="not-found"><div><h2>Không tìm thấy trang</h2><p>Trang này không tồn tại hoặc đã bị xoá.</p><a class="btn btn-dark" href="/">Về trang chủ ${arrow}</a></div></section>`
+  : page ? renderPage(c, page, state.page) : `
   ${hero.hidden ? '' : `
   <section class="hero" id="hero" style="background-image:url('${esc(hero.image)}')"${ed('hero.image')}>
     <div class="container">
@@ -343,7 +390,7 @@ function render(c) {
             <div class="icon"${ed(`capabilities.cards.${i}.icon`)}>${svg(cd.icon)}</div>
             <h4${ed(`capabilities.cards.${i}.title`)}>${nl(cd.title)}</h4>
             <p${ed(`capabilities.cards.${i}.text`)}>${nl(cd.text)}</p>
-            ${cd.linkLabel ? `<a class="link" href="${esc(cd.href)}"${ed(`capabilities.cards.${i}.linkLabel`)}>${esc(cd.linkLabel)} ${arrow}</a>` : ''}
+            ${cd.linkLabel ? `<a class="link" href="${esc((!cd.href || cd.href === '#') && pages[i]?.slug ? `/p/${pages[i].slug}` : cd.href)}"${ed(`capabilities.cards.${i}.linkLabel`)}>${esc(cd.linkLabel)} ${arrow}</a>` : ''}
           </div>`).join('')}
         </div>
         <div class="cap-img reveal"${ed('capabilities.image')}><img src="${esc(cap.image)}" alt=""></div>
@@ -376,6 +423,7 @@ function render(c) {
       </div>
     </div>
   </section>`}
+  `}
 
   <footer class="footer" id="footer">
     <div class="container">
@@ -403,8 +451,79 @@ function render(c) {
     </div>
   </footer>`;
 
+  // Trên trang con: link "#section" của trang chủ phải trỏ về "/#section"
+  if (page || notFound) document.querySelectorAll('#app a[href^="#"]').forEach((a) => {
+    const hash = a.getAttribute('href');
+    if (hash.length > 1 && hash !== '#bao-gia' && !document.getElementById(hash.slice(1))) a.setAttribute('href', '/' + hash);
+  });
   setupEffects();
   renderQuote();
+}
+
+/* ---------- Trang chi tiết ---------- */
+function renderPage(c, p, i) {
+  const P = `pages.items.${i}`;
+  const others = (c.pages?.items || []).map((x, j) => ({ x, j })).filter((o) => o.j !== i && o.x.slug);
+  const tel = String(c.quote?.phone || '').replace(/[^\d+]/g, '');
+  return `
+  <section class="page-hero" id="page-top" style="background-image:url('${esc(p.image || c.capabilities?.image || '')}')"${ed(`${P}.image`)}>
+    <div class="container">
+      <nav class="crumbs"><a href="/">Trang chủ</a><span>/</span><a href="/#capabilities"${ed('pages.parentLabel')}>${esc(c.pages?.parentLabel || 'Năng lực')}</a></nav>
+      <h1${ed(`${P}.title`)}>${nl(p.title)}</h1>
+      ${p.subtitle ? `<p${ed(`${P}.subtitle`)}>${nl(p.subtitle)}</p>` : ''}
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container page-grid">
+      <article>
+        ${p.intro ? `<p class="lead reveal"${ed(`${P}.intro`)}>${nl(p.intro)}</p>` : ''}
+        ${(p.sections || []).map((s, k) => `
+        <div class="page-sec reveal">
+          ${s.image ? `<img src="${esc(s.image)}" alt=""${ed(`${P}.sections.${k}.image`)}>` : ''}
+          <h3${ed(`${P}.sections.${k}.heading`)}>${nl(s.heading)}</h3>
+          <p${ed(`${P}.sections.${k}.text`)}>${nl(s.text)}</p>
+        </div>`).join('')}
+      </article>
+      <aside class="page-aside">
+        <div class="aside-card">
+          ${(p.highlights || []).length ? `
+          <h4${ed(`${P}.highlightsTitle`)}>${esc(p.highlightsTitle || 'Điểm nổi bật')}</h4>
+          <ul class="features">${p.highlights.map((hl, k) => `<li${ed(`${P}.highlights.${k}.text`)}>${svg('check')}${esc(hl.text)}</li>`).join('')}</ul>` : ''}
+          <a class="btn btn-accent" href="#bao-gia"${ed('pages.asideButton')}>${esc(c.pages?.asideButton || 'Nhận báo giá')} ${arrow}</a>
+          ${tel ? `<a class="aside-phone" href="tel:${esc(tel)}">📞 ${esc(c.quote.phone)}</a>` : ''}
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  ${others.length ? `
+  <section class="related soft">
+    <div class="container">
+      <h2 class="reveal"${ed('pages.relatedTitle')}>${esc(c.pages?.relatedTitle || 'Tìm hiểu thêm')}</h2>
+      <div class="related-grid">${others.map(({ x, j }) => `
+        <a class="cap-card reveal" href="/p/${esc(x.slug)}">
+          <div class="icon"${ed(`pages.items.${j}.icon`)}>${svg(x.icon)}</div>
+          <h4>${nl(x.title)}</h4>
+          <p>${esc(x.subtitle)}</p>
+          <span class="link">Xem chi tiết ${arrow}</span>
+        </a>`).join('')}
+      </div>
+    </div>
+  </section>` : ''}
+
+  ${p.ctaTitle ? `
+  <section class="page-cta">
+    <div class="container">
+      <div class="banner-box reveal">
+        <div>
+          <h3${ed(`${P}.ctaTitle`)}>${nl(p.ctaTitle)}</h3>
+          ${p.ctaText ? `<p${ed(`${P}.ctaText`)}>${nl(p.ctaText)}</p>` : ''}
+        </div>
+        <a class="btn btn-accent" href="${esc(p.ctaHref || '#bao-gia')}"${ed(`${P}.ctaLabel`)}>${esc(p.ctaLabel || 'Nhận báo giá')} ${arrow}</a>
+      </div>
+    </div>
+  </section>` : ''}`;
 }
 
 /* ---------- Interactions ---------- */
@@ -540,7 +659,15 @@ if (PREVIEW) {
   // Bấm vào chữ/ảnh trong preview -> nhảy tới ô sửa tương ứng bên admin
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-edit]');
-    if (e.target.closest('a')) e.preventDefault();
+    const a = e.target.closest('a');
+    if (a) {
+      e.preventDefault();
+      // Cho phép bấm qua lại giữa trang chủ và trang chi tiết ngay trong preview
+      const href = a.getAttribute('href') || '';
+      const pm = href.match(/^\/p\/([a-z0-9-]+)/);
+      if (pm) showPreviewPage((content.pages?.items || []).findIndex((x) => x.slug === pm[1]));
+      else if (href === '/' || href.startsWith('/#')) { showPreviewPage(null); if (href.length > 2) document.getElementById(href.slice(2))?.scrollIntoView(); }
+    }
     if (el) parent.postMessage({ type: 'select', path: el.dataset.edit }, location.origin);
   }, true);
   parent.postMessage({ type: 'ready' }, location.origin);
@@ -551,7 +678,20 @@ if (PREVIEW) {
     .catch(() => { document.getElementById('app').innerHTML = '<p style="padding:40px">Không tải được nội dung.</p>'; });
 }
 
+function showPreviewPage(i) {
+  const next = i != null && i >= 0 ? i : null;
+  if (next === state.page) return;
+  state.page = next;
+  render(content);
+  window.scrollTo(0, 0);
+}
+
 function focusPath(path) {
+  // Ô của trang chi tiết -> hiện trang đó; ô của section trang chủ -> về trang chủ
+  const pm = path.match(/^pages\.items\.(\d+)/);
+  if (pm) showPreviewPage(+pm[1]);
+  else if (path.startsWith('pages') && state.page == null) showPreviewPage(0);
+  else if (/^(hero|usp|industries|capabilities|banner|faq)(\.|$)/.test(path)) showPreviewPage(null);
   // Ô sửa thuộc popup báo giá -> mở popup; ô khác -> đóng popup
   if (path.startsWith('quote')) {
     const sent = path.startsWith('quote.success');

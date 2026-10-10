@@ -106,12 +106,18 @@ const LINE_SEPS = new RegExp('[' + String.fromCharCode(0x2028, 0x2029) + ']', 'g
 const jsonForScript = (o) => JSON.stringify(o).replace(/</g, '\\u003c').replace(LINE_SEPS, (c) => '\\u' + c.charCodeAt(0).toString(16));
 
 // Nhúng sẵn nội dung vào HTML: trang hiện ngay, Google đọc được tiêu đề/mô tả
-async function renderIndex() {
+async function renderIndex(slug) {
   const c = await getContent();
+  const page = slug ? (c.pages?.items || []).find((x) => x.slug === slug) : null;
+  if (slug && !page) return null;
+  const site = String(c.seo?.siteName || '').trim();
+  const title = page ? (site ? `${page.title} | ${site}` : page.title) : c.seo?.title;
+  const desc = page ? page.subtitle : c.seo?.description;
   return PAGES.index
-    .replace('<title>Loading…</title>', `<title>${escHtml(c.seo?.title)}</title>`)
-    .replace('<meta name="description" content="">', `<meta name="description" content="${escHtml(c.seo?.description)}">`)
-    .replace('</head>', `<script>window.__CONTENT__=${jsonForScript(c)}</script>\n</head>`);
+    .replace('<title>Loading…</title>', `<title>${escHtml(title)}</title>`)
+    .replace('<meta name="description" content="">', `<meta name="description" content="${escHtml(desc)}">`)
+    .replace('</head>', `<script>window.__CONTENT__=${jsonForScript(c)}${page ? ';window.__PAGE__=' + jsonForScript(slug) : ''}</script>
+</head>`);
 }
 
 /* ---------- Ảnh: nhận diện theo nội dung file, không tin đuôi file ---------- */
@@ -160,6 +166,12 @@ async function route(req, res) {
 
   if (m === 'GET') {
     if (p === '/' || p === '/index.html') return send(res, 200, await renderIndex());
+    const sub = p.match(/^\/p\/([a-z0-9-]{1,80})\/?$/);
+    if (sub) {
+      const html = await renderIndex(sub[1]);
+      // Không có trang: vẫn trả giao diện (hiện "Không tìm thấy trang") kèm mã 404
+      return send(res, html ? 200 : 404, html || (await renderIndex()).replace('</head>', '<script>window.__PAGE__="404"</script></head>'));
+    }
     if (p === '/login') return (await auth.getSessionUser(getCookie(req, 'sid'))) ? redirect(res, '/admin') : send(res, 200, PAGES.login);
     if (p === '/admin' || p === '/admin.html') return (await auth.getSessionUser(getCookie(req, 'sid'))) ? send(res, 200, PAGES.admin) : redirect(res, '/login');
     if (p === '/health') return send(res, 200, { ok: true });

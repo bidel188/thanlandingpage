@@ -223,8 +223,9 @@ const SCHEMA = [
     { k: 'soft', t: 'color', label: 'Màu nền xám nhạt', half: true },
   ]},
   { key: 'seo', title: 'SEO / Google', hint: 'Tiêu đề tab & mô tả khi tìm kiếm', fields: [
-    { k: 'title', t: 'text', label: 'Tiêu đề trang' },
+    { k: 'title', t: 'text', label: 'Tiêu đề trang chủ' },
     { k: 'description', t: 'textarea', label: 'Mô tả ngắn' },
+    { k: 'siteName', t: 'text', label: 'Tên thương hiệu (thêm sau tiêu đề trang chi tiết, VD: “Năng lực | CANOPY”)' },
   ]},
   { key: 'header', title: 'Menu đầu trang', hint: 'Logo, menu, nút liên hệ', fields: [
     { k: 'logo', t: 'image', label: 'Logo' },
@@ -274,6 +275,28 @@ const SCHEMA = [
       { k: 'text', t: 'textarea', label: 'Mô tả' },
       ...link('linkLabel', 'Chữ link', 'href') ] },
   ]},
+  { key: 'pages', title: 'Trang chi tiết', hint: 'Các trang “Tìm hiểu thêm” (/p/…)', fields: [
+    { k: 'parentLabel', t: 'text', label: 'Tên mục cha (trên đường dẫn)', half: true },
+    { k: 'relatedTitle', t: 'text', label: 'Tiêu đề phần trang liên quan', half: true },
+    { k: 'asideButton', t: 'text', label: 'Chữ nút ở cột phải (mở popup báo giá)' },
+    { k: 'items', t: 'list', label: 'Danh sách trang (thứ tự = thứ tự thẻ Năng lực)', name: 'trang', item: [
+      { k: 'title', t: 'text', label: 'Tiêu đề trang' },
+      { k: 'slug', t: 'text', label: 'Đường dẫn: /p/…', ph: 'vd: chuyen-mon-ve-carbon' },
+      { k: 'icon', t: 'icon', label: 'Icon (hiện ở thẻ liên quan)' },
+      { k: 'subtitle', t: 'textarea', label: 'Mô tả ngắn (dưới tiêu đề, cũng dùng cho Google)' },
+      { k: 'image', t: 'image', label: 'Ảnh đầu trang (trống = dùng ảnh phần Năng lực)' },
+      { k: 'intro', t: 'textarea', label: 'Đoạn mở đầu' },
+      { k: 'sections', t: 'list', label: 'Các mục nội dung', name: 'mục', item: [
+        { k: 'heading', t: 'text', label: 'Tiêu đề mục' },
+        { k: 'text', t: 'textarea', label: 'Nội dung (Enter = xuống dòng)' },
+        { k: 'image', t: 'image', label: 'Ảnh (không bắt buộc)' } ] },
+      { k: 'highlightsTitle', t: 'text', label: 'Tiêu đề hộp bên phải' },
+      { k: 'highlights', t: 'list', label: 'Các dòng trong hộp bên phải', name: 'dòng', inline: true, item: [{ k: 'text', t: 'text', ph: 'Nội dung' }] },
+      { k: 'ctaTitle', t: 'text', label: 'Tiêu đề khối kêu gọi cuối trang (trống = ẩn)' },
+      { k: 'ctaText', t: 'textarea', label: 'Mô tả khối kêu gọi' },
+      ...link('ctaLabel', 'Chữ trên nút', 'ctaHref'),
+    ]},
+  ]},
   { key: 'quote', title: 'Popup báo giá', hint: 'Hiện khi bấm nút có link #bao-gia', fields: [
     { k: 'title', t: 'text', label: 'Tiêu đề popup' },
     { k: 'text', t: 'textarea', label: 'Mô tả' },
@@ -317,6 +340,13 @@ const SCHEMA = [
   ]},
 ];
 
+const LINK_OPTIONS = document.getElementById('links').innerHTML;
+// Gợi ý link: các section cố định + từng trang chi tiết
+function refreshLinks() {
+  document.getElementById('links').innerHTML = LINK_OPTIONS + (content.pages?.items || []).filter((x) => x.slug)
+    .map((x) => `<option value="/p/${esc(x.slug)}">Trang: ${esc(x.title)}</option>`).join('');
+}
+
 /* ================= STATE ================= */
 let content, saved, snap, typing = null;
 const history = [];
@@ -353,6 +383,7 @@ function renderForm() {
     `<div class="reset"><button type="button" class="tbtn" data-reset="1">↺ Nạp nội dung mặc định</button>
       <small>Thay toàn bộ nội dung đang sửa bằng bản mặc định trong <code>content.json</code>. Chỉ áp dụng lên web khi bấm Lưu; bấm Hoàn tác nếu nhầm.</small></div>`;
   side.scrollTop = top;
+  refreshLinks();
 }
 
 function field(f, base) {
@@ -462,8 +493,14 @@ function undo() {
 side.addEventListener('input', (e) => {
   const el = e.target, p = el.dataset.path;
   if (!p) return;
-  const val = el.type === 'checkbox' ? (el.hasAttribute('data-invert') ? !el.checked : el.checked) : el.value;
+  let val = el.type === 'checkbox' ? (el.hasAttribute('data-invert') ? !el.checked : el.checked) : el.value;
+  // Đường dẫn trang: bỏ dấu, chữ thường, khoảng trắng -> "-"
+  if (p.endsWith('.slug')) {
+    const clean = val.normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+/, '').slice(0, 80);
+    if (clean !== val) { val = clean; el.value = clean; }
+  }
   set(p, val);
+  if (/^pages\.items\.\d+\.(slug|title)$/.test(p)) refreshLinks();
   // Đồng bộ các ô cùng path (ô màu + mã màu, ảnh + link ảnh)
   side.querySelectorAll(`[data-path="${CSS.escape(p)}"]`).forEach((o) => { if (o !== el && o.type !== 'checkbox') o.value = val; });
   const box = side.querySelector(`[data-drop="${CSS.escape(p)}"]`);
