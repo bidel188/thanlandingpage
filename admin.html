@@ -97,6 +97,21 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.err { background: #b91c1c; }
 
+.count { background: var(--accent); color: #fff; border-radius: 99px; font-size: 11px; padding: 1px 7px; font-weight: 700; }
+.dialog.wide { max-width: 640px; }
+.lead-filter { display: flex; gap: 16px; margin: 14px 0 12px; font-weight: 600; }
+.lead-filter label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.lead { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+.lead.done { background: #fafafa; opacity: .7; }
+.lead-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.lead-top b { font-size: 15px; }
+.lead-top time { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.lead-phone { display: inline-block; margin-top: 2px; font-weight: 700; color: var(--blue); text-decoration: none; }
+.lead p { margin: 6px 0 0; white-space: pre-wrap; font-size: 13px; }
+.lead small { color: var(--muted); }
+.lead-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.lead-actions label { display: flex; gap: 6px; align-items: center; font-weight: 600; cursor: pointer; font-size: 13px; }
+.empty { text-align: center; color: var(--muted); padding: 28px 0; }
 .reset { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); display: grid; gap: 6px; }
 .reset small { color: var(--muted); font-size: 12px; }
 
@@ -141,6 +156,7 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
   <button class="tbtn" id="undo" title="Hoàn tác (Ctrl+Z khi không gõ chữ)" disabled>↶ Hoàn tác</button>
   <a class="tbtn" href="/" target="_blank">Xem trang thật ↗</a>
   <button class="tbtn save" id="save" title="Ctrl+S">💾 Lưu</button>
+  <button class="tbtn" id="leadsBtn" title="Khách để lại thông tin">📥 Khách <span class="count" id="leadCount" hidden></span></button>
   <button class="tbtn" id="userBtn" title="Tài khoản">👤</button>
 </div>
 <div class="modal" id="account" hidden>
@@ -167,6 +183,26 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
   <aside class="side" id="side"></aside>
   <div class="stage" id="stage"><div class="frame-wrap" id="wrap"><iframe id="preview" title="Preview"></iframe></div></div>
 </div>
+<div class="modal" id="leads" hidden>
+  <div class="dialog wide">
+    <div class="dialog-h"><b>Khách để lại thông tin</b><button class="x" data-close>✕</button></div>
+    <div class="lead-filter">
+      <label><input type="radio" name="lf" value="new" checked> Chưa liên hệ</label>
+      <label><input type="radio" name="lf" value="all"> Tất cả</label>
+    </div>
+    <div id="leadList"></div>
+  </div>
+</div>
+<datalist id="links">
+  <option value="#bao-gia">Mở popup báo giá</option>
+  <option value="#hero">Banner đầu trang</option>
+  <option value="#usp">Điểm mạnh & số liệu</option>
+  <option value="#industries">Ngành ứng dụng</option>
+  <option value="#capabilities">Năng lực</option>
+  <option value="#banner">Banner catalogue</option>
+  <option value="#faq">Câu hỏi thường gặp</option>
+  <option value="#footer">Chân trang</option>
+</datalist>
 <input type="file" id="file" accept="image/*" hidden>
 <div class="toast" id="toast"></div>
 
@@ -176,7 +212,7 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
    Muốn thêm ô mới: thêm field vào đây + dùng nó trong index.html */
 const link = (k, label, hrefKey = k.replace(/Label$|Button$/, '') + 'Href') => [
   { k, t: 'text', label, half: true },
-  { k: hrefKey, t: 'text', label: 'Link khi bấm', half: true, ph: '#section hoặc https://…' },
+  { k: hrefKey, t: 'text', label: 'Link khi bấm', half: true, ph: '#bao-gia = mở popup báo giá', link: true },
 ];
 const SHOW = { k: 'hidden', t: 'toggle' };
 const SCHEMA = [
@@ -193,7 +229,7 @@ const SCHEMA = [
   { key: 'header', title: 'Menu đầu trang', hint: 'Logo, menu, nút liên hệ', fields: [
     { k: 'logo', t: 'image', label: 'Logo' },
     { k: 'nav', t: 'list', label: 'Các mục menu', inline: true, item: [
-      { k: 'label', t: 'text', ph: 'Tên mục' }, { k: 'href', t: 'text', ph: 'Link' } ] },
+      { k: 'label', t: 'text', ph: 'Tên mục' }, { k: 'href', t: 'text', ph: 'Link', link: true } ] },
     ...link('ctaLabel', 'Chữ nút bên phải', 'ctaHref'),
   ]},
   { key: 'hero', title: 'Banner chính (Hero)', hint: 'Ảnh lớn đầu trang', fields: [
@@ -238,6 +274,20 @@ const SCHEMA = [
       { k: 'text', t: 'textarea', label: 'Mô tả' },
       ...link('linkLabel', 'Chữ link', 'href') ] },
   ]},
+  { key: 'quote', title: 'Popup báo giá', hint: 'Hiện khi bấm nút có link #bao-gia', fields: [
+    { k: 'title', t: 'text', label: 'Tiêu đề popup' },
+    { k: 'text', t: 'textarea', label: 'Mô tả' },
+    { k: 'phone', t: 'text', label: 'Số điện thoại (bỏ trống = ẩn nút gọi)', half: true, ph: '0386 192 866' },
+    { k: 'callLabel', t: 'text', label: 'Chữ trước số', half: true, ph: 'Gọi' },
+    { k: 'zalo', t: 'text', label: 'Số Zalo (bỏ trống = ẩn nút Zalo)', half: true, ph: '0386192866' },
+    { k: 'zaloLabel', t: 'text', label: 'Chữ nút Zalo', half: true, ph: 'Chat Zalo' },
+    { k: 'showForm', t: 'check', label: 'Hiện form để khách điền thông tin' },
+    { k: 'orText', t: 'text', label: 'Dòng ngăn cách' },
+    { k: 'needPlaceholder', t: 'text', label: 'Gợi ý trong ô Nhu cầu' },
+    { k: 'buttonLabel', t: 'text', label: 'Chữ nút gửi' },
+    { k: 'successTitle', t: 'text', label: 'Tiêu đề sau khi gửi' },
+    { k: 'successText', t: 'textarea', label: 'Lời nhắn sau khi gửi' },
+  ]},
   { key: 'banner', title: 'Banner tải catalogue', hint: 'Khối nền tối có nút đỏ', fields: [
     SHOW,
     { k: 'title', t: 'text', label: 'Tiêu đề' },
@@ -262,7 +312,7 @@ const SCHEMA = [
     { k: 'columns', t: 'list', label: 'Cột link', name: 'cột', item: [
       { k: 'title', t: 'text', label: 'Tiêu đề cột' },
       { k: 'links', t: 'list', label: 'Các link', name: 'link', inline: true, item: [
-        { k: 'label', t: 'text', ph: 'Chữ' }, { k: 'href', t: 'text', ph: 'Link' } ] } ] },
+        { k: 'label', t: 'text', ph: 'Chữ' }, { k: 'href', t: 'text', ph: 'Link', link: true } ] } ] },
     { k: 'copyright', t: 'text', label: 'Dòng bản quyền' },
   ]},
 ];
@@ -309,7 +359,8 @@ function field(f, base) {
   const p = `${base}.${f.k}`, v = get(p), cls = `fld ${f.half ? 'half' : ''}`;
   const label = f.label ? `<span>${f.label}</span>` : '';
   switch (f.t) {
-    case 'text': return `<label class="${cls}">${label}<input type="text" data-path="${p}" value="${esc(v)}" placeholder="${esc(f.ph || '')}"></label>`;
+    case 'text': return `<label class="${cls}">${label}<input type="text" data-path="${p}" value="${esc(v)}" placeholder="${esc(f.ph || '')}"${f.link ? ' list="links"' : ''}></label>`;
+    case 'check': return `<label class="switch"><input type="checkbox" data-path="${p}" ${v === false ? '' : 'checked'}> ${f.label}</label>`;
     case 'textarea': return `<label class="${cls}">${label}<textarea data-path="${p}" rows="${Math.min(8, Math.max(2, String(v || '').split('\n').length + 1))}">${esc(v)}</textarea></label>`;
     case 'color': return `<div class="${cls}">${label}<div class="color"><input type="color" data-path="${p}" value="${esc(v)}"><input type="text" data-path="${p}" value="${esc(v)}"></div></div>`;
     case 'toggle': return `<label class="switch"><input type="checkbox" data-path="${p}" data-invert ${v ? '' : 'checked'}> Hiển thị section này trên trang</label>`;
@@ -332,7 +383,7 @@ function item(f, p, it, i, n) {
     <button type="button" data-dup="${p}" title="Nhân bản">⧉</button>
     <button type="button" class="del" data-del="${p}" title="Xoá">✕</button></div>`;
   if (f.inline) return `<div class="item inline"><div class="row">${f.item.map((sf) =>
-    `<input type="text" data-path="${p}.${sf.k}" value="${esc(it[sf.k])}" placeholder="${esc(sf.ph || '')}">`).join('')}</div>${tools}</div>`;
+    `<input type="text" data-path="${p}.${sf.k}" value="${esc(it[sf.k])}" placeholder="${esc(sf.ph || '')}"${sf.link ? ' list="links"' : ''}>`).join('')}</div>${tools}</div>`;
   return `<div class="item ${openItems.has(p) ? 'open' : ''}" data-item="${p}">
     <div class="item-h" data-toggle="${p}"><span class="n">${i + 1}</span><span class="sum">${esc(summary(f, it) || `(${f.name || 'mục'} trống)`)}</span>${tools}</div>
     <div class="item-b">${f.item.map((sf) => field(sf, p)).join('')}</div></div>`;
@@ -594,6 +645,55 @@ $('#logout').onclick = async () => {
   location.replace('/login');
 };
 
+/* ================= KHÁCH ĐỂ LẠI THÔNG TIN ================= */
+const leadsModal = $('#leads');
+let leads = [];
+const fmtTime = (s) => new Date(s).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+async function loadLeads() {
+  // Gọi thẳng fetch: chạy ngầm nên không bật thông báo hết phiên
+  try {
+    const res = await fetch('/api/leads', { headers: { 'X-Requested-With': 'admin' } });
+    if (!res.ok) return;
+    leads = await res.json();
+  } catch { return; }
+  const n = leads.filter((l) => !l.done).length;
+  $('#leadCount').textContent = n; $('#leadCount').hidden = !n;
+  if (!leadsModal.hidden) renderLeads();
+}
+function renderLeads() {
+  const showAll = document.querySelector('input[name=lf]:checked').value === 'all';
+  const list = leads.filter((l) => showAll || !l.done);
+  $('#leadList').innerHTML = list.length ? list.map((l) => `
+    <div class="lead ${l.done ? 'done' : ''}">
+      <div class="lead-top"><b>${esc(l.name)}</b><time>${fmtTime(l.created_at)}</time></div>
+      <a class="lead-phone" href="tel:${esc(l.phone.replace(/[^\d+]/g, ''))}">📞 ${esc(l.phone)}</a>
+      ${l.company ? `<p>🏢 ${esc(l.company)}</p>` : ''}
+      ${l.need ? `<p>${esc(l.need)}</p>` : ''}
+      <div class="lead-actions">
+        <label><input type="checkbox" data-done="${l.id}" ${l.done ? 'checked' : ''}> Đã liên hệ</label>
+        <button class="tbtn sm" data-dellead="${l.id}">Xoá</button>
+      </div>
+    </div>`).join('') : `<div class="empty">${showAll ? 'Chưa có khách nào để lại thông tin.' : '🎉 Không còn khách nào chờ liên hệ.'}</div>`;
+}
+$('#leadsBtn').onclick = () => { leadsModal.hidden = false; renderLeads(); loadLeads(); };
+leadsModal.addEventListener('click', (e) => { if (e.target === leadsModal || e.target.closest('[data-close]')) leadsModal.hidden = true; });
+leadsModal.addEventListener('change', async (e) => {
+  if (e.target.name === 'lf') return renderLeads();
+  const id = e.target.dataset.done;
+  if (!id) return;
+  try { await api('PATCH', `/api/leads/${id}`, { done: e.target.checked }); await loadLeads(); renderLeads(); }
+  catch (err) { toast(err.message, true); }
+});
+$('#leadList').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-dellead]');
+  if (!b) return;
+  if (!b.classList.contains('confirm')) { b.classList.add('confirm'); b.textContent = 'Chắc chắn xoá?'; return; }
+  try { await api('DELETE', `/api/leads/${b.dataset.dellead}`); await loadLeads(); renderLeads(); toast('Đã xoá'); }
+  catch (err) { toast(err.message, true); }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') leadsModal.hidden = true; });
+
 /* ================= KHỞI ĐỘNG ================= */
 (async () => {
   try {
@@ -603,6 +703,7 @@ $('#logout').onclick = async () => {
     return;
   }
   $('#userBtn').textContent = '👤 ' + me.username;
+  loadLeads(); setInterval(loadLeads, 60000); // kiểm tra khách mới mỗi phút
   saved = snap = JSON.stringify(content);
   renderForm(); changed();
   frame.src = '/?preview=1';

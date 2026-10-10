@@ -61,8 +61,8 @@ section { padding-block: 112px; }
 .hero { position: relative; min-height: min(88vh, 860px); display: flex; align-items: flex-end; padding-block: 96px; background: #222 center/cover no-repeat; color: #fff; }
 .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.6) 100%); }
 .hero .container { position: relative; width: 100%; }
-.hero h1 { color: #fff; max-width: 20ch; }
-.hero p { margin-top: 20px; max-width: 560px; font-size: 20px; color: rgba(255,255,255,.88); }
+.hero h1 { color: #fff; font-size: clamp(30px, 3.6vw, 52px); }
+.hero p { margin-top: 20px; font-size: 20px; color: rgba(255,255,255,.88); }
 .hero .btn { margin-top: 36px; }
 
 /* USP */
@@ -115,8 +115,8 @@ section { padding-block: 112px; }
 .banner-box .btn { position: relative; z-index: 1; }
 
 /* FAQ */
-.faq-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
-.faq-wrap h2 { position: sticky; top: 120px; }
+.faq-wrap { display: grid; grid-template-columns: 1.15fr 1.35fr; gap: 56px; align-items: start; }
+.faq-wrap h2 { position: sticky; top: 120px; font-size: clamp(26px, 2.8vw, 40px); }
 .qa { border-bottom: 1px solid var(--line); }
 .qa button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 0; background: none; border: 0; text-align: left; cursor: pointer; font: 700 19px/1.35 var(--body); color: var(--text); }
 .qa button i { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; position: relative; transition: transform .25s, background .25s; }
@@ -142,6 +142,42 @@ section { padding-block: 112px; }
 .foot-col h5 { font: 800 13px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin: 0 0 20px; }
 .foot-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 15px; }
 .copyright { border-top: 1px solid var(--line); margin-top: 56px; padding-top: 24px; font-size: 14px; }
+
+/* Popup báo giá */
+.q-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.55); display: grid; place-items: center; padding: 16px; animation: qfade .2s ease; }
+@keyframes qfade { from { opacity: 0; } }
+.q-box { position: relative; width: 100%; max-width: 520px; max-height: calc(100vh - 32px); overflow-y: auto; background: #fff; border-radius: 12px; padding: 36px 32px 28px; box-shadow: 0 24px 80px rgba(0,0,0,.3); animation: qup .25s ease; }
+@keyframes qup { from { transform: translateY(16px); opacity: 0; } }
+.q-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--soft); color: var(--text); font-size: 18px; cursor: pointer; }
+.q-close:hover { background: var(--line); }
+.q-box h3 { font-size: 24px; margin-bottom: 8px; padding-right: 32px; }
+.q-box > p { font-size: 15px; }
+.q-contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.q-contacts a { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 12px; border-radius: 8px; font-weight: 700; font-size: 15px; color: #fff; text-align: center; }
+.q-contacts a svg { width: 20px; height: 20px; flex: none; }
+.q-call { background: var(--accent); }
+.q-zalo { background: #0068FF; }
+.q-contacts a:hover { filter: brightness(.92); }
+.q-contacts a:only-child { grid-column: span 2; }
+.q-or { display: flex; align-items: center; gap: 12px; margin: 22px 0 16px; font-size: 13px; color: var(--muted); }
+.q-or::before, .q-or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+.q-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.q-form label { display: grid; gap: 5px; font-size: 13px; font-weight: 600; color: var(--text); }
+.q-form .full { grid-column: span 2; }
+.q-form input, .q-form textarea { font: 15px var(--body); color: var(--text); padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; outline: none; width: 100%; background: #fff; }
+.q-form textarea { resize: vertical; min-height: 84px; }
+.q-form input:focus, .q-form textarea:focus { border-color: var(--text); }
+.q-form .btn { justify-content: center; margin-top: 4px; }
+.q-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.q-msg { grid-column: span 2; font-size: 14px; padding: 10px 12px; border-radius: 8px; background: #fee2e2; color: #991b1b; }
+.q-done { text-align: center; padding: 16px 0 4px; }
+.q-done b { display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%; background: #dcfce7; color: #16a34a; font-size: 28px; }
+.q-done p { color: var(--text); }
+@media (max-width: 480px) {
+  .q-box { padding: 32px 20px 22px; }
+  .q-contacts, .q-form { grid-template-columns: 1fr; }
+  .q-contacts a:only-child, .q-form .full, .q-msg { grid-column: auto; }
+}
 
 /* Reveal on scroll */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
@@ -187,6 +223,7 @@ body.preview .flash { outline: 3px solid var(--accent) !important; outline-offse
 </head>
 <body>
 <div id="app"></div>
+<div id="quote"></div>
 
 <script>
 const ICONS = window.ICONS = {
@@ -211,7 +248,7 @@ const ed = (path) => ` data-edit="${path}"`;
 const arrow = svg('arrow');
 
 const PREVIEW = new URLSearchParams(location.search).has('preview');
-const state = { tab: 0, faq: 0 };
+const state = { tab: 0, faq: 0, quoteOpen: false, quoteSent: false };
 let content = null;
 
 function render(c) {
@@ -367,6 +404,7 @@ function render(c) {
   </footer>`;
 
   setupEffects();
+  renderQuote();
 }
 
 /* ---------- Interactions ---------- */
@@ -380,7 +418,10 @@ document.addEventListener('click', (e) => {
     document.querySelectorAll('.qa').forEach((el, j) => el.classList.toggle('open', j === state.faq));
   }
   if (e.target.closest('.nav a')) document.querySelector('.header')?.classList.remove('open');
+  if (e.target.closest('a[href="#bao-gia"]')) { e.preventDefault(); openQuote(); }
+  if (e.target.matches('.q-overlay') || e.target.closest('.q-close')) closeQuote();
 });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.quoteOpen) closeQuote(); });
 
 let observer;
 function setupEffects() {
@@ -408,6 +449,85 @@ function countUp(el) {
   requestAnimationFrame(step);
 }
 
+/* ---------- Popup báo giá: mở bằng mọi link có href="#bao-gia" ---------- */
+const PHONE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>';
+const CHAT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.6 1.3 4.9 3.4 6.5L4.6 21l3.3-1.7c1.3.4 2.6.6 4.1.6 5.5 0 10-3.9 10-8.7S17.5 3 12 3z" fill="currentColor"/></svg>';
+
+function openQuote() {
+  state.quoteOpen = true; state.quoteSent = false;
+  renderQuote();
+  if (!PREVIEW) document.body.style.overflow = 'hidden';
+}
+function closeQuote() {
+  state.quoteOpen = false;
+  renderQuote();
+  document.body.style.overflow = '';
+}
+
+function renderQuote() {
+  const root = document.getElementById('quote');
+  if (!state.quoteOpen || !content) { root.innerHTML = ''; return; }
+  const q = content.quote || {};
+  const tel = String(q.phone || '').replace(/[^\d+]/g, '');
+  const zalo = String(q.zalo || '').replace(/\D/g, '');
+  const contacts = [
+    tel && `<a class="q-call" href="tel:${esc(tel)}"${ed('quote.phone')}>${PHONE_ICON}${esc(q.callLabel || 'Gọi')} ${esc(q.phone)}</a>`,
+    zalo && `<a class="q-zalo" href="https://zalo.me/${esc(zalo)}" target="_blank" rel="noopener"${ed('quote.zalo')}>${CHAT_ICON}${esc(q.zaloLabel || 'Chat Zalo')}</a>`,
+  ].filter(Boolean).join('');
+
+  root.innerHTML = `
+  <div class="q-overlay">
+    <div class="q-box" role="dialog" aria-modal="true" aria-labelledby="q-title">
+      <button type="button" class="q-close" aria-label="Đóng">✕</button>
+      ${state.quoteSent ? `
+      <div class="q-done">
+        <b>✓</b>
+        <h3 id="q-title"${ed('quote.successTitle')}>${esc(q.successTitle || 'Đã gửi thông tin!')}</h3>
+        <p${ed('quote.successText')}>${nl(q.successText || 'Chúng tôi sẽ liên hệ lại với bạn sớm nhất.')}</p>
+      </div>` : `
+      <h3 id="q-title"${ed('quote.title')}>${esc(q.title || 'Nhận báo giá')}</h3>
+      ${q.text ? `<p${ed('quote.text')}>${nl(q.text)}</p>` : ''}
+      ${contacts ? `<div class="q-contacts">${contacts}</div>` : ''}
+      ${q.showForm === false ? '' : `
+      ${contacts ? `<div class="q-or"${ed('quote.orText')}>${esc(q.orText || 'hoặc để lại thông tin')}</div>` : '<div style="height:20px"></div>'}
+      <form class="q-form" novalidate>
+        <label>Họ và tên *<input name="name" autocomplete="name" maxlength="100" required></label>
+        <label>Số điện thoại *<input name="phone" type="tel" autocomplete="tel" maxlength="20" required></label>
+        <label class="full">Công ty<input name="company" autocomplete="organization" maxlength="150"></label>
+        <label class="full">Nhu cầu<textarea name="need" maxlength="2000" placeholder="${esc(q.needPlaceholder || 'Loại than, ứng dụng, số lượng dự kiến…')}"></textarea></label>
+        <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        <div class="q-msg" hidden></div>
+        <button class="btn btn-accent full"${ed('quote.buttonLabel')}>${esc(q.buttonLabel || 'Gửi thông tin')} ${arrow}</button>
+      </form>`}`}
+    </div>
+  </div>`;
+}
+
+document.addEventListener('submit', async (e) => {
+  const form = e.target.closest('.q-form');
+  if (!form) return;
+  e.preventDefault();
+  const msg = form.querySelector('.q-msg'), btn = form.querySelector('button');
+  const show = (t) => { msg.textContent = t; msg.hidden = false; };
+  const data = Object.fromEntries(new FormData(form));
+  if (PREVIEW) return show('Đây là bản xem trước — form không gửi đi.');
+  if (data.name.trim().length < 2) return show('Vui lòng nhập họ tên.');
+  if (!/^[+\d][\d\s.()-]{7,19}$/.test(data.phone.trim())) return show('Số điện thoại chưa đúng.');
+  msg.hidden = true; btn.disabled = true;
+  try {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'admin' },
+      body: JSON.stringify({ ...data, page: location.href }),
+    });
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Gửi thất bại, vui lòng thử lại.');
+    state.quoteSent = true; renderQuote();
+  } catch (err) {
+    show(err.message === 'Failed to fetch' ? 'Không kết nối được, vui lòng thử lại.' : err.message);
+    btn.disabled = false;
+  }
+});
+
 /* ---------- Preview bridge (dùng bởi admin.html) ---------- */
 if (PREVIEW) {
   document.body.classList.add('preview');
@@ -432,6 +552,11 @@ if (PREVIEW) {
 }
 
 function focusPath(path) {
+  // Ô sửa thuộc popup báo giá -> mở popup; ô khác -> đóng popup
+  if (path.startsWith('quote')) {
+    const sent = path.startsWith('quote.success');
+    if (!state.quoteOpen || state.quoteSent !== sent) { state.quoteOpen = true; state.quoteSent = sent; renderQuote(); }
+  } else if (state.quoteOpen) closeQuote();
   let m = path.match(/^industries\.tabs\.(\d+)/);
   if (m && +m[1] !== state.tab) { state.tab = +m[1]; render(content); }
   m = path.match(/^faq\.items\.(\d+)/);

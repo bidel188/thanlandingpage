@@ -70,7 +70,36 @@ async function requireUser(req) {
 
 /* ---------- Nội dung (cache trong bộ nhớ, xoá khi lưu) ---------- */
 let contentCache = null;
-const getContent = async () => (contentCache ??= await db.getContent());
+// Bổ sung các phần mới (VD popup báo giá) cho nội dung đã lưu từ phiên bản cũ
+function withDefaults(c) {
+  const def = JSON.parse(page('content.json'));
+  for (const k of Object.keys(def)) if (c[k] === undefined) c[k] = def[k];
+  return c;
+}
+const getContent = async () => (contentCache ??= withDefaults(await db.getContent()));
+
+/* ---------- Khách để lại thông tin (form báo giá) ---------- */
+const leadHits = new Map();
+function leadRateLimited(ip) {
+  const now = Date.now(), hits = (leadHits.get(ip) || []).filter((t) => now - t < 10 * 60 * 1000);
+  hits.push(now); leadHits.set(ip, hits);
+  if (leadHits.size > 10000) leadHits.clear();
+  return hits.length > 5; // tối đa 5 lần gửi / 10 phút / IP
+}
+async function createLead(req) {
+  const b = await readJson(req);
+  if (b.website) return; // ô ẩn chống bot: người thật không điền
+  const str = (v, max) => String(v ?? '').trim().slice(0, max);
+  const name = str(b.name, 100), phone = str(b.phone, 20);
+  if (name.length < 2) throw new HttpError(400, 'Vui lòng nhập họ tên.');
+  if (!/^[+\d][\d\s.()-]{7,19}$/.test(phone)) throw new HttpError(400, 'Số điện thoại chưa đúng.');
+  if (leadRateLimited(clientIp(req))) throw new HttpError(429, 'Bạn đã gửi nhiều lần, vui lòng thử lại sau ít phút.');
+  await db.pool.query(
+    'INSERT INTO leads (name, phone, company, need, page, ip) VALUES ($1, $2, $3, $4, $5, $6)',
+    [name, phone, str(b.company, 150), str(b.need, 2000), str(b.page, 300), clientIp(req)]
+  );
+  console.log(`  📥 Khách mới: ${name} - ${phone}`);
+}
 
 const escHtml = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const LINE_SEPS = new RegExp('[' + String.fromCharCode(0x2028, 0x2029) + ']', 'g');
@@ -142,6 +171,11 @@ async function route(req, res) {
       await requireUser(req);
       return send(res, 200, JSON.parse(page('content.json')));
     }
+    if (p === '/api/leads') {
+      await requireUser(req);
+      const { rows } = await db.pool.query('SELECT id, name, phone, company, need, page, done, created_at FROM leads ORDER BY id DESC LIMIT 500');
+      return send(res, 200, rows);
+    }
     if (p === '/api/users') {
       await requireUser(req);
       const { rows } = await db.pool.query('SELECT id, username, created_at FROM users ORDER BY id');
@@ -167,13 +201,26 @@ async function route(req, res) {
     return send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(req, '', 0) });
   }
 
+  if (m === 'POST' && p === '/api/leads') { await createLead(req); return send(res, 200, { ok: true }); }
+
   const user = await requireUser(req);
+
+  const lead = p.match(/^\/api\/leads\/(\d+)$/);
+  if (lead && m === 'PATCH') {
+    const { done } = await readJson(req);
+    await db.pool.query('UPDATE leads SET done = $1 WHERE id = $2', [!!done, +lead[1]]);
+    return send(res, 200, { ok: true });
+  }
+  if (lead && m === 'DELETE') {
+    await db.pool.query('DELETE FROM leads WHERE id = $1', [+lead[1]]);
+    return send(res, 200, { ok: true });
+  }
 
   if (m === 'PUT' && p === '/api/content') {
     const data = await readJson(req);
     if (!data || typeof data !== 'object' || Array.isArray(data) || !data.hero || !data.footer) throw new HttpError(400, 'Nội dung không hợp lệ');
     await db.saveContent(data, user.id);
-    contentCache = data;
+    contentCache = withDefaults(data);
     return send(res, 200, { ok: true });
   }
   if (m === 'POST' && p === '/api/upload') return send(res, 200, await uploadImage(req, user));

@@ -162,6 +162,20 @@
       { "q": "Than hoạt tính được dùng để làm gì?", "a": "Xử lý nước và nước thải, lọc khí và không khí, thu hồi vàng, chế biến dầu khí, làm sạch thực phẩm và đồ uống, cùng nhiều ứng dụng khác." }
     ]
   },
+  "quote": {
+    "title": "Nhận báo giá & tư vấn",
+    "text": "Liên hệ trực tiếp hoặc để lại thông tin, chúng tôi sẽ gọi lại tư vấn loại than phù hợp với hệ thống của bạn.",
+    "phone": "",
+    "callLabel": "Gọi",
+    "zalo": "",
+    "zaloLabel": "Chat Zalo",
+    "showForm": true,
+    "orText": "hoặc để lại thông tin, chúng tôi gọi lại",
+    "needPlaceholder": "Loại than, ứng dụng, số lượng dự kiến…",
+    "buttonLabel": "Gửi thông tin",
+    "successTitle": "Đã gửi thông tin!",
+    "successText": "Cảm ơn bạn. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất."
+  },
   "footer": {
     "ctaTitle": "Chưa biết nên chọn loại than nào?",
     "ctaText": "Kỹ sư của chúng tôi sẽ giúp bạn chọn đúng loại than cho quy trình của mình.",

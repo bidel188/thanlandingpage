@@ -37,6 +37,17 @@ async function migrate() {
       uploaded_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+    CREATE TABLE IF NOT EXISTS leads (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      company TEXT NOT NULL DEFAULT '',
+      need TEXT NOT NULL DEFAULT '',
+      page TEXT NOT NULL DEFAULT '',
+      ip TEXT NOT NULL DEFAULT '',
+      done BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
     CREATE TABLE IF NOT EXISTS content_versions (
       id SERIAL PRIMARY KEY,
       data JSONB NOT NULL,
