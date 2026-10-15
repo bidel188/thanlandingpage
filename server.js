@@ -95,8 +95,9 @@ async function createLead(req) {
   if (!/^[+\d][\d\s.()-]{7,19}$/.test(phone)) throw new HttpError(400, 'Số điện thoại chưa đúng.');
   if (leadRateLimited(clientIp(req))) throw new HttpError(429, 'Bạn đã gửi nhiều lần, vui lòng thử lại sau ít phút.');
   await db.pool.query(
-    'INSERT INTO leads (name, phone, company, need, page, ip) VALUES ($1, $2, $3, $4, $5, $6)',
-    [name, phone, str(b.company, 150), str(b.need, 2000), str(b.page, 300), clientIp(req)]
+    'INSERT INTO leads (name, phone, company, need, page, ip, application, volume, source) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+    [name, phone, str(b.company, 150), str(b.need, 2000), str(b.page, 300), clientIp(req),
+      str(b.application, 100), str(b.volume, 100), str(b.source, 1000)]
   );
   console.log(`  📥 Khách mới: ${name} - ${phone}`);
 }
@@ -113,7 +114,12 @@ async function renderIndex(slug) {
   const site = String(c.seo?.siteName || '').trim();
   const title = page ? (site ? `${page.title} | ${site}` : page.title) : c.seo?.title;
   const desc = page ? page.subtitle : c.seo?.description;
+  // Google Tag Manager: chỉ nhúng khi admin nhập mã hợp lệ; không chạy trong khung xem trước của admin
+  const gtm = String(c.seo?.gtmId || '').trim().toUpperCase();
+  const gtmTag = /^GTM-[A-Z0-9]{4,12}$/.test(gtm) ? `<script>if(!/[?&]preview/.test(location.search)){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtm}');}</script>
+` : '';
   return PAGES.index
+    .replace('<meta charset="utf-8">', `<meta charset="utf-8">\n${gtmTag}`)
     .replace('<title>Loading…</title>', `<title>${escHtml(title)}</title>`)
     .replace('<meta name="description" content="">', `<meta name="description" content="${escHtml(desc)}">`)
     .replace('</head>', `<script>window.__CONTENT__=${jsonForScript(c)}${page ? ';window.__PAGE__=' + jsonForScript(slug) : ''}</script>
@@ -185,7 +191,7 @@ async function route(req, res) {
     }
     if (p === '/api/leads') {
       await requireUser(req);
-      const { rows } = await db.pool.query('SELECT id, name, phone, company, need, page, done, created_at FROM leads ORDER BY id DESC LIMIT 500');
+      const { rows } = await db.pool.query('SELECT id, name, phone, company, need, page, application, volume, source, done, created_at FROM leads ORDER BY id DESC LIMIT 500');
       return send(res, 200, rows);
     }
     if (p === '/api/users') {

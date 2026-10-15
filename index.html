@@ -201,6 +201,20 @@ section { padding-block: 112px; }
 .q-form textarea { resize: vertical; min-height: 84px; }
 .q-form input:focus, .q-form textarea:focus { border-color: var(--text); }
 .q-form .btn { justify-content: center; margin-top: 4px; }
+.q-form select { font: 15px var(--body); color: var(--text); padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; outline: none; width: 100%; background: #fff; }
+.q-form select:focus { border-color: var(--text); }
+
+/* Thanh liên hệ cố định trên điện thoại */
+.sticky-bar { display: none; }
+@media (max-width: 809px) {
+  .sticky-bar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -6px 20px rgba(0,0,0,.08); }
+  .sticky-bar a { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 8px; border-radius: 8px; font: 700 15px/1 var(--body); color: #fff; }
+  .sticky-bar svg { width: 18px; height: 18px; flex: none; }
+  .sticky-bar .s-call { background: var(--text); }
+  .sticky-bar .s-zalo { background: #0068FF; }
+  .sticky-bar .s-quote { background: var(--accent); }
+  body.has-sticky { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+}
 .q-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .q-msg { grid-column: span 2; font-size: 14px; padding: 10px 12px; border-radius: 8px; background: #fee2e2; color: #991b1b; }
 .q-done { text-align: center; padding: 16px 0 4px; }
@@ -262,6 +276,7 @@ body.preview .flash { outline: 3px solid var(--accent) !important; outline-offse
 <body>
 <div id="app"></div>
 <div id="quote"></div>
+<div id="sticky"></div>
 
 <script>
 const ICONS = window.ICONS = {
@@ -289,6 +304,34 @@ const PREVIEW = new URLSearchParams(location.search).has('preview');
 const PAGE_SLUG = window.__PAGE__ || null; // server đặt khi mở /p/<slug>
 const state = { tab: 0, faq: 0, quoteOpen: false, quoteSent: false, page: null };
 let content = null;
+
+/* ---------- Đo lường cho Google Ads ---------- */
+// Đẩy sự kiện vào dataLayer để Google Tag Manager bắt (generate_lead, click_call, click_zalo, click_email, open_quote)
+function track(event, params = {}) {
+  if (PREVIEW) return;
+  (window.dataLayer = window.dataLayer || []).push({ event, ...params });
+}
+// Lưu nguồn của lượt vào đầu tiên (gclid, utm_*, trang giới thiệu) để gửi kèm form, kể cả khi khách chuyển sang trang chi tiết
+const SOURCE_KEYS = ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+function captureSource() {
+  try {
+    const qs = new URLSearchParams(location.search), found = new URLSearchParams();
+    SOURCE_KEYS.forEach((k) => qs.get(k) && found.set(k, qs.get(k).slice(0, 200)));
+    if (found.toString()) {
+      found.set('landing', location.pathname);
+      sessionStorage.setItem('lead_source', found.toString());
+    } else if (!sessionStorage.getItem('lead_source') && document.referrer && !document.referrer.startsWith(location.origin)) {
+      sessionStorage.setItem('lead_source', new URLSearchParams({ ref: document.referrer.slice(0, 300) }).toString());
+    }
+  } catch {}
+}
+function leadSource() {
+  try { return sessionStorage.getItem('lead_source') || ''; } catch { return ''; }
+}
+if (!PREVIEW) captureSource();
+const DEFAULT_APPLICATIONS = 'Xử lý nước, nước thải\nXử lý khí thải, mùi, VOC\nDầu khí, hóa dầu\nVàng, kim loại quý\nThực phẩm, đồ uống\nKhác';
+const DEFAULT_VOLUMES = 'Dưới 1 tấn\n1 – 5 tấn\n5 – 20 tấn\nTrên 20 tấn\nChưa xác định';
+const lines = (s) => String(s ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
 
 function render(c) {
   content = c;
@@ -458,6 +501,20 @@ function render(c) {
   });
   setupEffects();
   renderQuote();
+  renderSticky();
+}
+
+// Thanh Gọi / Zalo / Báo giá cố định ở đáy màn hình điện thoại (header ẩn nút báo giá trên mobile)
+function renderSticky() {
+  const root = document.getElementById('sticky'), q = content?.quote || {};
+  const tel = String(q.phone || '').replace(/[^\d+]/g, ''), zalo = String(q.zalo || '').replace(/\D/g, '');
+  const on = q.stickyBar !== false;
+  document.body.classList.toggle('has-sticky', on);
+  root.innerHTML = on ? `<div class="sticky-bar">
+    ${tel ? `<a class="s-call" href="tel:${esc(tel)}">${PHONE_ICON}${esc(q.callLabel || 'Gọi')}</a>` : ''}
+    ${zalo ? `<a class="s-zalo" href="https://zalo.me/${esc(zalo)}" target="_blank" rel="noopener">${CHAT_ICON}Zalo</a>` : ''}
+    <a class="s-quote" href="#bao-gia">${esc(content?.pages?.asideButton || 'Nhận báo giá')}</a>
+  </div>` : '';
 }
 
 /* ---------- Trang chi tiết ---------- */
@@ -538,6 +595,13 @@ document.addEventListener('click', (e) => {
   }
   if (e.target.closest('.nav a')) document.querySelector('.header')?.classList.remove('open');
   if (e.target.closest('a[href="#bao-gia"]')) { e.preventDefault(); openQuote(); }
+  // Sự kiện liên hệ cho Google Ads (GTM trigger: Custom Event = click_call / click_zalo / click_email)
+  const contactLink = e.target.closest('a[href^="tel:"], a[href*="zalo.me/"], a[href^="mailto:"]');
+  if (contactLink) {
+    const href = contactLink.getAttribute('href');
+    const where = contactLink.closest('.sticky-bar') ? 'sticky_bar' : contactLink.closest('.q-box') ? 'quote_popup' : contactLink.closest('footer') ? 'footer' : 'page';
+    track(href.startsWith('tel:') ? 'click_call' : href.startsWith('mailto:') ? 'click_email' : 'click_zalo', { contact_location: where });
+  }
   if (e.target.matches('.q-overlay') || e.target.closest('.q-close')) closeQuote();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.quoteOpen) closeQuote(); });
@@ -575,12 +639,22 @@ const CHAT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.
 function openQuote() {
   state.quoteOpen = true; state.quoteSent = false;
   renderQuote();
+  track('open_quote');
   if (!PREVIEW) document.body.style.overflow = 'hidden';
 }
 function closeQuote() {
   state.quoteOpen = false;
   renderQuote();
   document.body.style.overflow = '';
+}
+
+// Ô chọn trong form; danh sách lựa chọn sửa trong admin (mỗi dòng 1 lựa chọn), để trống thì ẩn ô
+function selectField(name, label, options) {
+  const opts = lines(options);
+  if (!opts.length) return '';
+  return `<label class="full">${esc(label)}<select name="${name}">
+    <option value="">— Chọn —</option>${opts.map((o) => `<option>${esc(o)}</option>`).join('')}
+  </select></label>`;
 }
 
 function renderQuote() {
@@ -613,6 +687,8 @@ function renderQuote() {
         <label>Họ và tên *<input name="name" autocomplete="name" maxlength="100" required></label>
         <label>Số điện thoại *<input name="phone" type="tel" autocomplete="tel" maxlength="20" required></label>
         <label class="full">Công ty<input name="company" autocomplete="organization" maxlength="150"></label>
+        ${selectField('application', 'Ứng dụng', q.applications ?? DEFAULT_APPLICATIONS)}
+        ${selectField('volume', 'Sản lượng dự kiến', q.volumes ?? DEFAULT_VOLUMES)}
         <label class="full">Nhu cầu<textarea name="need" maxlength="2000" placeholder="${esc(q.needPlaceholder || 'Loại than, ứng dụng, số lượng dự kiến…')}"></textarea></label>
         <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
         <div class="q-msg" hidden></div>
@@ -637,10 +713,12 @@ document.addEventListener('submit', async (e) => {
     const res = await fetch('/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'admin' },
-      body: JSON.stringify({ ...data, page: location.href }),
+      body: JSON.stringify({ ...data, page: location.href, source: leadSource() }),
     });
     if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Gửi thất bại, vui lòng thử lại.');
     state.quoteSent = true; renderQuote();
+    // Chuyển đổi chính cho Google Ads (GTM trigger: Custom Event = generate_lead)
+    track('generate_lead', { lead_application: data.application || '', lead_volume: data.volume || '' });
   } catch (err) {
     show(err.message === 'Failed to fetch' ? 'Không kết nối được, vui lòng thử lại.' : err.message);
     btn.disabled = false;

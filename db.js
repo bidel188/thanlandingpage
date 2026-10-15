@@ -48,6 +48,10 @@ async function migrate() {
       done BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+    -- Bổ sung cho Google Ads: ứng dụng, sản lượng, nguồn (gclid/utm) của khách
+    ALTER TABLE leads ADD COLUMN IF NOT EXISTS application TEXT NOT NULL DEFAULT '';
+    ALTER TABLE leads ADD COLUMN IF NOT EXISTS volume TEXT NOT NULL DEFAULT '';
+    ALTER TABLE leads ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT '';
     CREATE TABLE IF NOT EXISTS content_versions (
       id SERIAL PRIMARY KEY,
       data JSONB NOT NULL,

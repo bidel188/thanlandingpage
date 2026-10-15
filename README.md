@@ -53,6 +53,23 @@ Windows: điền `.env` rồi bấm đúp `start.bat`.
 
 **Popup báo giá:** mọi nút/link có href `#bao-gia` mở popup (gọi, Zalo, form). Thông tin khách xem ở nút 📥 Khách trong admin.
 
+## Đo lường cho Google Ads
+
+- **Google Tag Manager:** nhập mã `GTM-XXXXXXX` trong admin → *SEO / Google*. Để trống = tắt. Không chạy trong khung xem trước của admin.
+- **Sự kiện đẩy vào `dataLayer`** (trong GTM tạo trigger *Custom Event* đúng tên):
+
+  | Sự kiện | Khi nào | Tham số |
+  |---|---|---|
+  | `generate_lead` | Gửi form báo giá thành công | `lead_application`, `lead_volume` |
+  | `click_call` | Bấm số điện thoại (popup, thanh dưới, footer) | `contact_location` |
+  | `click_zalo` | Bấm Zalo | `contact_location` |
+  | `click_email` | Bấm email | `contact_location` |
+  | `open_quote` | Mở popup báo giá | — |
+
+- **Nguồn khách:** `gclid`, `gbraid`, `wbraid`, `utm_*` của lượt vào đầu tiên được lưu (sessionStorage) và gửi kèm form, kể cả khi khách đã chuyển sang trang chi tiết. Xem ở nút 📥 Khách (dòng 🔎). Nên bật *Auto-tagging* trong Google Ads và thêm `utm_term={keyword}` vào *Final URL suffix* để thấy từ khóa.
+- **Form báo giá** có thêm ô *Ứng dụng* và *Sản lượng dự kiến*; danh sách lựa chọn sửa trong admin → *Popup báo giá* (mỗi dòng 1 lựa chọn, để trống = ẩn ô).
+- **Thanh Gọi / Zalo / Báo giá** cố định ở đáy màn hình điện thoại; tắt trong admin → *Popup báo giá*.
+
 Khôi phục bản cũ (chạy trong tab **Data → Query** của Postgres trên Railway):
 ```sql
 SELECT id, created_at FROM content_versions ORDER BY id DESC;      -- xem các bản

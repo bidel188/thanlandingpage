@@ -8,7 +8,8 @@
   "seo": {
     "title": "Nhà sản xuất than hoạt tính gáo dừa | Ivar Carbons",
     "siteName": "Ivar Carbons",
-    "description": "Than hoạt tính gáo dừa cao cấp cho xử lý nước, lọc không khí, thu hồi vàng, dầu khí và chế biến thực phẩm. Tùy chỉnh theo yêu cầu, chất lượng ổn định, cung ứng toàn cầu."
+    "description": "Than hoạt tính gáo dừa cao cấp cho xử lý nước, lọc không khí, thu hồi vàng, dầu khí và chế biến thực phẩm. Tùy chỉnh theo yêu cầu, chất lượng ổn định, cung ứng toàn cầu.",
+    "gtmId": ""
   },
   "header": {
     "logo": "https://framerusercontent.com/images/CcJahzA47kzLDKZzrCkVemqdxs.png",
@@ -276,7 +277,10 @@
     "zaloLabel": "Chat Zalo",
     "showForm": true,
     "orText": "hoặc để lại thông tin, chúng tôi gọi lại",
+    "applications": "Xử lý nước, nước thải\nXử lý khí thải, mùi, VOC\nDầu khí, hóa dầu\nVàng, kim loại quý\nThực phẩm, đồ uống\nKhác",
+    "volumes": "Dưới 1 tấn\n1 – 5 tấn\n5 – 20 tấn\nTrên 20 tấn\nChưa xác định",
     "needPlaceholder": "Loại than, ứng dụng, số lượng dự kiến…",
+    "stickyBar": true,
     "buttonLabel": "Gửi thông tin",
     "successTitle": "Đã gửi thông tin!",
     "successText": "Cảm ơn bạn. Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất."

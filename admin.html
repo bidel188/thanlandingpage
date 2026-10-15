@@ -226,6 +226,7 @@ const SCHEMA = [
     { k: 'title', t: 'text', label: 'Tiêu đề trang chủ' },
     { k: 'description', t: 'textarea', label: 'Mô tả ngắn' },
     { k: 'siteName', t: 'text', label: 'Tên thương hiệu (thêm sau tiêu đề trang chi tiết, VD: “Năng lực | CANOPY”)' },
+    { k: 'gtmId', t: 'text', label: 'Mã Google Tag Manager (để trống = tắt)', ph: 'GTM-XXXXXXX' },
   ]},
   { key: 'header', title: 'Menu đầu trang', hint: 'Logo, menu, nút liên hệ', fields: [
     { k: 'logo', t: 'image', label: 'Logo' },
@@ -306,7 +307,10 @@ const SCHEMA = [
     { k: 'zaloLabel', t: 'text', label: 'Chữ nút Zalo', half: true, ph: 'Chat Zalo' },
     { k: 'showForm', t: 'check', label: 'Hiện form để khách điền thông tin' },
     { k: 'orText', t: 'text', label: 'Dòng ngăn cách' },
+    { k: 'applications', t: 'textarea', label: 'Lựa chọn ô "Ứng dụng" (mỗi dòng 1 lựa chọn, để trống = ẩn ô)' },
+    { k: 'volumes', t: 'textarea', label: 'Lựa chọn ô "Sản lượng dự kiến" (mỗi dòng 1 lựa chọn, để trống = ẩn ô)' },
     { k: 'needPlaceholder', t: 'text', label: 'Gợi ý trong ô Nhu cầu' },
+    { k: 'stickyBar', t: 'check', label: 'Hiện thanh Gọi / Zalo / Báo giá cố định ở đáy màn hình điện thoại' },
     { k: 'buttonLabel', t: 'text', label: 'Chữ nút gửi' },
     { k: 'successTitle', t: 'text', label: 'Tiêu đề sau khi gửi' },
     { k: 'successText', t: 'textarea', label: 'Lời nhắn sau khi gửi' },
@@ -698,6 +702,14 @@ async function loadLeads() {
   $('#leadCount').textContent = n; $('#leadCount').hidden = !n;
   if (!leadsModal.hidden) renderLeads();
 }
+// Tóm tắt nguồn khách: Google Ads (có gclid) / utm / trang giới thiệu
+function leadSource(s) {
+  const p = new URLSearchParams(s);
+  if (p.get('gclid') || p.get('gbraid') || p.get('wbraid')) return 'Google Ads' + (p.get('utm_term') ? ` · từ khóa: ${p.get('utm_term')}` : '') + (p.get('utm_campaign') ? ` · ${p.get('utm_campaign')}` : '');
+  if (p.get('utm_source')) return [p.get('utm_source'), p.get('utm_medium'), p.get('utm_campaign')].filter(Boolean).join(' / ');
+  if (p.get('ref')) { try { return 'Từ ' + new URL(p.get('ref')).hostname; } catch {} }
+  return 'Trực tiếp';
+}
 function renderLeads() {
   const showAll = document.querySelector('input[name=lf]:checked').value === 'all';
   const list = leads.filter((l) => showAll || !l.done);
@@ -706,7 +718,9 @@ function renderLeads() {
       <div class="lead-top"><b>${esc(l.name)}</b><time>${fmtTime(l.created_at)}</time></div>
       <a class="lead-phone" href="tel:${esc(l.phone.replace(/[^\d+]/g, ''))}">📞 ${esc(l.phone)}</a>
       ${l.company ? `<p>🏢 ${esc(l.company)}</p>` : ''}
+      ${l.application || l.volume ? `<p>🏭 ${esc([l.application, l.volume].filter(Boolean).join(' · '))}</p>` : ''}
       ${l.need ? `<p>${esc(l.need)}</p>` : ''}
+      ${l.source ? `<p title="${esc(l.source)}">🔎 ${esc(leadSource(l.source))}</p>` : ''}
       <div class="lead-actions">
         <label><input type="checkbox" data-done="${l.id}" ${l.done ? 'checked' : ''}> Đã liên hệ</label>
         <button class="tbtn sm" data-dellead="${l.id}">Xoá</button>
