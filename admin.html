@@ -101,6 +101,7 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
 .dialog.wide { max-width: 640px; }
 .lead-filter { display: flex; gap: 16px; margin: 14px 0 12px; font-weight: 600; }
 .lead-filter label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.lead-filter .lead-export { margin-left: auto; text-decoration: none; }
 .lead { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
 .lead.done { background: #fafafa; opacity: .7; }
 .lead-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
@@ -189,6 +190,7 @@ iframe { border: 0; display: block; width: 100%; height: 100%; }
     <div class="lead-filter">
       <label><input type="radio" name="lf" value="new" checked> Chưa liên hệ</label>
       <label><input type="radio" name="lf" value="all"> Tất cả</label>
+      <a class="tbtn sm lead-export" id="leadExport" href="/api/leads.xlsx?filter=new" download>⬇ Tải Excel</a>
     </div>
     <div id="leadList"></div>
   </div>
@@ -712,6 +714,9 @@ function leadSource(s) {
 }
 function renderLeads() {
   const showAll = document.querySelector('input[name=lf]:checked').value === 'all';
+  // Nút tải Excel xuất đúng danh sách đang xem (chưa liên hệ / tất cả)
+  $('#leadExport').href = '/api/leads.xlsx' + (showAll ? '' : '?filter=new');
+  $('#leadExport').title = showAll ? 'Tải tất cả khách' : 'Tải khách chưa liên hệ';
   const list = leads.filter((l) => showAll || !l.done);
   $('#leadList').innerHTML = list.length ? list.map((l) => `
     <div class="lead ${l.done ? 'done' : ''}">

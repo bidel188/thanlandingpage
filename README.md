@@ -41,6 +41,7 @@ Windows: điền `.env` rồi bấm đúp `start.bat`.
 |---|---|
 | `server.js` | Server HTTP: route, upload ảnh, API |
 | `db.js` | Kết nối PostgreSQL, tạo bảng tự động |
+| `xlsx.js` | Tạo file Excel danh sách khách |
 | `auth.js` | Mật khẩu (scrypt), phiên đăng nhập, chống dò mật khẩu |
 | `index.html` | Trang landing |
 | `admin.html` | Trang admin (danh sách ô nhập ở `SCHEMA`) |
@@ -51,7 +52,7 @@ Windows: điền `.env` rồi bấm đúp `start.bat`.
 
 **Trang chi tiết:** mỗi mục trong admin → *Trang chi tiết* có đường dẫn `/p/<slug>`. Thẻ Năng lực thứ N có link trống hoặc `#` tự trỏ tới trang chi tiết thứ N.
 
-**Popup báo giá:** mọi nút/link có href `#bao-gia` mở popup (gọi, Zalo, form). Thông tin khách xem ở nút 📥 Khách trong admin.
+**Popup báo giá:** mọi nút/link có href `#bao-gia` mở popup (gọi, Zalo, form). Thông tin khách xem ở nút 📥 Khách trong admin; nút **⬇ Tải Excel** tải danh sách đang xem (chưa liên hệ hoặc tất cả) thành file `.xlsx` (`xlsx.js`, không cần thư viện ngoài).
 
 ## Đo lường cho Google Ads
 

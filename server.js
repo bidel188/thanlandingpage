@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const db = require('./db');
 const auth = require('./auth');
+const { buildXlsx } = require('./xlsx');
 
 const PORT = process.env.PORT || 3000;
 const MAX_IMAGE = 15 * 1024 * 1024;
@@ -102,6 +103,44 @@ async function createLead(req) {
   console.log(`  📥 Khách mới: ${name} - ${phone}`);
 }
 
+/* ---------- Xuất danh sách khách ra Excel ---------- */
+// Tách nguồn khách (chuỗi gclid/utm lưu khi gửi form) thành các cột dễ đọc
+function parseSource(s) {
+  const p = new URLSearchParams(s || '');
+  const ads = p.get('gclid') || p.get('gbraid') || p.get('wbraid');
+  let ref = '';
+  try { ref = p.get('ref') ? new URL(p.get('ref')).hostname : ''; } catch {}
+  return {
+    channel: ads ? 'Google Ads' : p.get('utm_source') ? [p.get('utm_source'), p.get('utm_medium')].filter(Boolean).join(' / ') : ref ? 'Giới thiệu: ' + ref : 'Trực tiếp',
+    keyword: p.get('utm_term') || '',
+    campaign: p.get('utm_campaign') || '',
+    landing: p.get('landing') || '',
+  };
+}
+const vnTime = (d) => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'short' }).format(new Date(d));
+
+async function exportLeads(res, onlyNew) {
+  const { rows } = await db.pool.query(
+    `SELECT name, phone, company, application, volume, need, source, page, done, created_at FROM leads ${onlyNew ? 'WHERE NOT done ' : ''}ORDER BY id DESC`
+  );
+  const table = [['Thời gian', 'Họ tên', 'Số điện thoại', 'Công ty', 'Ứng dụng', 'Sản lượng', 'Nhu cầu', 'Nguồn', 'Từ khóa', 'Chiến dịch', 'Trang gửi form', 'Đã liên hệ']];
+  for (const l of rows) {
+    const s = parseSource(l.source);
+    let page = l.page;
+    try { page = new URL(l.page).pathname; } catch {}
+    table.push([vnTime(l.created_at), l.name, l.phone, l.company, l.application, l.volume, l.need, s.channel, s.keyword, s.campaign, page, l.done ? 'Rồi' : 'Chưa']);
+  }
+  const file = buildXlsx(table, { sheetName: 'Khách hàng', widths: [17, 22, 15, 26, 24, 14, 40, 16, 26, 18, 22, 11] });
+  const stamp = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+  res.writeHead(200, {
+    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'Content-Disposition': `attachment; filename="khach-hang-${stamp}.xlsx"`,
+    'Content-Length': file.length,
+    'Cache-Control': 'no-store',
+  });
+  res.end(file);
+}
+
 const escHtml = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const LINE_SEPS = new RegExp('[' + String.fromCharCode(0x2028, 0x2029) + ']', 'g');
 const jsonForScript = (o) => JSON.stringify(o).replace(/</g, '\\u003c').replace(LINE_SEPS, (c) => '\\u' + c.charCodeAt(0).toString(16));
@@ -193,6 +232,10 @@ async function route(req, res) {
       await requireUser(req);
       const { rows } = await db.pool.query('SELECT id, name, phone, company, need, page, application, volume, source, done, created_at FROM leads ORDER BY id DESC LIMIT 500');
       return send(res, 200, rows);
+    }
+    if (p === '/api/leads.xlsx') {
+      await requireUser(req);
+      return exportLeads(res, url.searchParams.get('filter') === 'new');
     }
     if (p === '/api/users') {
       await requireUser(req);
