@@ -54,6 +54,20 @@ Windows: điền `.env` rồi bấm đúp `start.bat`.
 
 **Popup báo giá:** mọi nút/link có href `#bao-gia` mở popup (gọi, Zalo, form). Thông tin khách xem ở nút 📥 Khách trong admin; nút **⬇ Tải Excel** tải danh sách đang xem (chưa liên hệ hoặc tất cả) thành file `.xlsx` (`xlsx.js`, không cần thư viện ngoài).
 
+## Báo Telegram khi có khách mới
+
+Mỗi lần khách gửi form báo giá, bot gửi tin nhắn gồm tên, SĐT (bấm để copy), công ty, ứng dụng, sản lượng, nhu cầu, nguồn (Google Ads/từ khóa/chiến dịch), trang gửi form.
+
+1. Trong Telegram, nhắn [@BotFather](https://t.me/BotFather) → `/newbot` → đặt tên → nhận **token** dạng `123456:ABC-...`.
+2. Lấy **chat ID**:
+   - Nhận riêng: nhắn bot vừa tạo 1 tin bất kỳ (bấm *Start*).
+   - Nhận trong nhóm: thêm bot vào nhóm rồi gửi 1 tin trong nhóm.
+
+   Sau đó mở `https://api.telegram.org/bot<TOKEN>/getUpdates`, tìm `"chat":{"id": ...}`. ID nhóm là số âm, VD `-1001234567890`.
+3. Railway → service web → **Variables**, thêm `TELEGRAM_BOT_TOKEN` và `TELEGRAM_CHAT_ID`. Gửi cho nhiều nơi: các ID cách nhau dấu phẩy, VD `123456789,-1001234567890`.
+
+Khi khởi động, log in ra dòng `Telegram: bật` hoặc `Telegram: tắt`. Nếu Telegram lỗi (sai token, bot chưa được Start…) form vẫn lưu khách bình thường; lỗi in ra log `⚠️ Không gửi được Telegram`.
+
 ## Đo lường cho Google Ads
 
 - **Google Tag Manager:** nhập mã `GTM-XXXXXXX` trong admin → *SEO / Google*. Để trống = tắt. Không chạy trong khung xem trước của admin.

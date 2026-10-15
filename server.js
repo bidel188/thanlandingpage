@@ -95,12 +95,47 @@ async function createLead(req) {
   if (name.length < 2) throw new HttpError(400, 'Vui lòng nhập họ tên.');
   if (!/^[+\d][\d\s.()-]{7,19}$/.test(phone)) throw new HttpError(400, 'Số điện thoại chưa đúng.');
   if (leadRateLimited(clientIp(req))) throw new HttpError(429, 'Bạn đã gửi nhiều lần, vui lòng thử lại sau ít phút.');
+  const lead = { name, phone, company: str(b.company, 150), need: str(b.need, 2000), page: str(b.page, 300),
+    application: str(b.application, 100), volume: str(b.volume, 100), source: str(b.source, 1000) };
   await db.pool.query(
     'INSERT INTO leads (name, phone, company, need, page, ip, application, volume, source) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-    [name, phone, str(b.company, 150), str(b.need, 2000), str(b.page, 300), clientIp(req),
-      str(b.application, 100), str(b.volume, 100), str(b.source, 1000)]
+    [lead.name, lead.phone, lead.company, lead.need, lead.page, clientIp(req), lead.application, lead.volume, lead.source]
   );
   console.log(`  📥 Khách mới: ${name} - ${phone}`);
+  notifyTelegram(lead); // không chờ: khách nhận phản hồi ngay, lỗi Telegram không ảnh hưởng form
+}
+
+/* ---------- Báo Telegram khi có khách mới ---------- */
+// Cần TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (nhiều chat cách nhau dấu phẩy). Thiếu 1 trong 2 = tắt
+const TG_TOKEN = String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+const TG_CHATS = String(process.env.TELEGRAM_CHAT_ID || '').split(',').map((s) => s.trim()).filter(Boolean);
+const telegramOn = !!(TG_TOKEN && TG_CHATS.length);
+
+function notifyTelegram(l) {
+  if (!telegramOn) return;
+  const s = parseSource(l.source);
+  const text = [
+    '🔔 <b>Khách mới để lại thông tin</b>',
+    `👤 <b>${escHtml(l.name)}</b>`,
+    `📞 <code>${escHtml(l.phone)}</code>`,
+    l.company && `🏢 ${escHtml(l.company)}`,
+    l.application && `🏭 Ứng dụng: ${escHtml(l.application)}`,
+    l.volume && `📦 Sản lượng: ${escHtml(l.volume)}`,
+    l.need && `📝 ${escHtml(l.need)}`,
+    `🔎 ${escHtml([s.channel, s.keyword && 'từ khóa: ' + s.keyword, s.campaign && 'chiến dịch: ' + s.campaign].filter(Boolean).join(' · '))}`,
+    l.page && `📄 ${escHtml(pagePath(l.page))}`,
+    `🕒 ${vnTime(new Date())}`,
+  ].filter(Boolean).join('\n');
+  for (const chat of TG_CHATS) {
+    fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chat, text, parse_mode: 'HTML', link_preview_options: { is_disabled: true } }),
+      signal: AbortSignal.timeout(10000),
+    })
+      .then(async (r) => { if (!r.ok) throw new Error(`${r.status} ${(await r.text()).slice(0, 200)}`); })
+      .catch((e) => console.error(`  ⚠️ Không gửi được Telegram tới ${chat}:`, e.message));
+  }
 }
 
 /* ---------- Xuất danh sách khách ra Excel ---------- */
@@ -118,6 +153,7 @@ function parseSource(s) {
   };
 }
 const vnTime = (d) => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'short' }).format(new Date(d));
+const pagePath = (u) => { try { return new URL(u).pathname; } catch { return u; } };
 
 async function exportLeads(res, onlyNew) {
   const { rows } = await db.pool.query(
@@ -126,9 +162,7 @@ async function exportLeads(res, onlyNew) {
   const table = [['Thời gian', 'Họ tên', 'Số điện thoại', 'Công ty', 'Ứng dụng', 'Sản lượng', 'Nhu cầu', 'Nguồn', 'Từ khóa', 'Chiến dịch', 'Trang gửi form', 'Đã liên hệ']];
   for (const l of rows) {
     const s = parseSource(l.source);
-    let page = l.page;
-    try { page = new URL(l.page).pathname; } catch {}
-    table.push([vnTime(l.created_at), l.name, l.phone, l.company, l.application, l.volume, l.need, s.channel, s.keyword, s.campaign, page, l.done ? 'Rồi' : 'Chưa']);
+    table.push([vnTime(l.created_at), l.name, l.phone, l.company, l.application, l.volume, l.need, s.channel, s.keyword, s.campaign, pagePath(l.page), l.done ? 'Rồi' : 'Chưa']);
   }
   const file = buildXlsx(table, { sheetName: 'Khách hàng', widths: [17, 22, 15, 26, 24, 14, 40, 16, 26, 18, 22, 11] });
   const stamp = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
@@ -321,6 +355,6 @@ const server = http.createServer(async (req, res) => {
   await db.migrate();
   await auth.ensureFirstAdmin();
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n  Landing: http://localhost:${PORT}/\n  Admin:   http://localhost:${PORT}/admin\n`);
+    console.log(`\n  Landing: http://localhost:${PORT}/\n  Admin:   http://localhost:${PORT}/admin\n  Telegram: ${telegramOn ? `bật (${TG_CHATS.length} chat)` : 'tắt'}\n`);
   });
 })().catch((e) => { console.error('Không khởi động được:', e.message); process.exit(1); });
