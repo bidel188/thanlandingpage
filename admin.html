@@ -312,6 +312,8 @@ const SCHEMA = [
     { k: 'applications', t: 'textarea', label: 'Lựa chọn ô "Ứng dụng" (mỗi dòng 1 lựa chọn, để trống = ẩn ô)' },
     { k: 'volumes', t: 'textarea', label: 'Lựa chọn ô "Sản lượng dự kiến" (mỗi dòng 1 lựa chọn, để trống = ẩn ô)' },
     { k: 'needPlaceholder', t: 'text', label: 'Gợi ý trong ô Nhu cầu' },
+    { k: 'autoOpen', t: 'check', label: 'Tự mở popup khi khách vào web (mỗi lượt truy cập 1 lần, không mở lại nếu khách đã gửi form)' },
+    { k: 'autoOpenDelay', t: 'text', label: 'Mở sau bao nhiêu giây (0 = mở ngay)', ph: '3' },
     { k: 'floatButtons', t: 'check', label: 'Hiện nút nổi Gọi + Zalo ở góc phải dưới (mọi trang, dùng số ở trên)' },
     { k: 'stickyBar', t: 'check', label: 'Hiện thanh cố định ở đáy màn hình điện thoại (khi bật nút nổi: thanh chỉ còn nút Báo giá)' },
     { k: 'buttonLabel', t: 'text', label: 'Chữ nút gửi' },
