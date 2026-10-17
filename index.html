@@ -215,6 +215,29 @@ section { padding-block: 112px; }
   .sticky-bar .s-quote { background: var(--accent); }
   body.has-sticky { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
 }
+/* Nút nổi Gọi + Zalo (góc phải dưới, mọi trang) */
+#ct-float { position: fixed; right: 16px; bottom: calc(20px + env(safe-area-inset-bottom)); z-index: 99999; display: flex; flex-direction: column; gap: 14px; align-items: flex-end; }
+.ct-btn { position: relative; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 14px rgba(0,0,0,.25); transition: transform .15s ease; }
+.ct-btn:hover { transform: scale(1.08); }
+.ct-btn:active { transform: scale(.95); }
+.ct-btn-call { background: #16a34a; }
+.ct-btn-zalo { background: #0068ff; }
+.ct-zalo-text { color: #fff; font: 700 15px/1 Arial, Helvetica, sans-serif; letter-spacing: .2px; }
+.ct-btn-call::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #16a34a; z-index: -1; animation: ct-pulse 1.8s ease-out infinite; }
+@keyframes ct-pulse { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(1.7); opacity: 0; } }
+.ct-tip { position: absolute; right: 68px; top: 50%; transform: translateY(-50%); white-space: nowrap; background: #111; color: #fff; font: 500 13px/1 Arial, Helvetica, sans-serif; padding: 8px 10px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.ct-btn:hover .ct-tip { opacity: 1; }
+@media (hover: none) { .ct-tip { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ct-btn-call::before { animation: none; } .ct-btn { transition: none; } }
+@media print { #ct-float { display: none; } }
+/* Đang mở popup báo giá: ẩn để không che nút gửi form */
+#quote:not(:empty) ~ #ct-root #ct-float { display: none; }
+@media (max-width: 809px) {
+  /* Có thanh đáy (chỉ còn nút báo giá): đặt nút nổi phía trên thanh */
+  body.has-sticky #ct-float { bottom: calc(80px + env(safe-area-inset-bottom)); }
+  /* Chừa chỗ cuối trang để nội dung cuối không nằm dưới nút nổi */
+  body.has-float .footer { padding-bottom: 160px; }
+}
 .q-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .q-msg { grid-column: span 2; font-size: 14px; padding: 10px 12px; border-radius: 8px; background: #fee2e2; color: #991b1b; }
 .q-done { text-align: center; padding: 16px 0 4px; }
@@ -277,6 +300,7 @@ body.preview .flash { outline: 3px solid var(--accent) !important; outline-offse
 <div id="app"></div>
 <div id="quote"></div>
 <div id="sticky"></div>
+<div id="ct-root"></div>
 
 <script>
 const ICONS = window.ICONS = {
@@ -502,6 +526,7 @@ function render(c) {
   setupEffects();
   renderQuote();
   renderSticky();
+  renderFloat();
 }
 
 // Thanh Gọi / Zalo / Báo giá cố định ở đáy màn hình điện thoại (header ẩn nút báo giá trên mobile)
@@ -510,10 +535,32 @@ function renderSticky() {
   const tel = String(q.phone || '').replace(/[^\d+]/g, ''), zalo = String(q.zalo || '').replace(/\D/g, '');
   const on = q.stickyBar !== false;
   document.body.classList.toggle('has-sticky', on);
+  // Khi đã có nút nổi Gọi/Zalo thì thanh đáy chỉ giữ nút báo giá, tránh trùng 2 nút gọi
+  const float = floatOn(q);
   root.innerHTML = on ? `<div class="sticky-bar">
-    ${tel ? `<a class="s-call" href="tel:${esc(tel)}">${PHONE_ICON}${esc(q.callLabel || 'Gọi')}</a>` : ''}
-    ${zalo ? `<a class="s-zalo" href="https://zalo.me/${esc(zalo)}" target="_blank" rel="noopener">${CHAT_ICON}Zalo</a>` : ''}
+    ${tel && !float ? `<a class="s-call" href="tel:${esc(tel)}">${PHONE_ICON}${esc(q.callLabel || 'Gọi')}</a>` : ''}
+    ${zalo && !float ? `<a class="s-zalo" href="https://zalo.me/${esc(zalo)}" target="_blank" rel="noopener">${CHAT_ICON}Zalo</a>` : ''}
     <a class="s-quote" href="#bao-gia">${esc(content?.pages?.asideButton || 'Nhận báo giá')}</a>
+  </div>` : '';
+}
+
+/* ---------- Nút nổi Gọi + Zalo (góc phải dưới) ---------- */
+// SĐT lấy từ 1 chỗ: admin → Popup báo giá (quote.phone; Zalo dùng quote.zalo, trống thì dùng luôn quote.phone)
+const floatPhone = (q) => String(q.phone || '').replace(/\D/g, '');
+const floatZalo = (q) => String(q.zalo || q.phone || '').replace(/\D/g, '');
+const floatOn = (q) => q.floatButtons !== false && !!(floatPhone(q) || floatZalo(q));
+
+function renderFloat() {
+  const root = document.getElementById('ct-root'), q = content?.quote || {};
+  const on = floatOn(q), tel = floatPhone(q), zalo = floatZalo(q);
+  document.body.classList.toggle('has-float', on);
+  root.innerHTML = on ? `
+  <div id="ct-float" aria-label="Liên hệ nhanh">
+    ${zalo ? `<a id="ct-zalo" class="ct-btn ct-btn-zalo" href="https://zalo.me/${esc(zalo)}" target="_blank" rel="noopener" aria-label="Nhắn Zalo"${ed('quote.zalo')}>
+      <span class="ct-zalo-text">Zalo</span><span class="ct-tip">Nhắn Zalo</span></a>` : ''}
+    ${tel ? `<a id="ct-call" class="ct-btn ct-btn-call" href="tel:${esc(tel)}" aria-label="Gọi điện ${esc(q.phone)}"${ed('quote.phone')}>
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff" aria-hidden="true"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>
+      <span class="ct-tip">Gọi ${esc(q.phone)}</span></a>` : ''}
   </div>` : '';
 }
 
@@ -596,7 +643,10 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('.nav a')) document.querySelector('.header')?.classList.remove('open');
   if (e.target.closest('a[href="#bao-gia"]')) { e.preventDefault(); openQuote(); }
   // Sự kiện liên hệ cho Google Ads (GTM trigger: Custom Event = click_call / click_zalo / click_email)
-  const contactLink = e.target.closest('a[href^="tel:"], a[href*="zalo.me/"], a[href^="mailto:"]');
+  // Nút nổi: sự kiện riêng contact_click (GTM/Google Ads bắt đúng tên này), đẩy trước khi điều hướng
+  const floatBtn = e.target.closest('#ct-call, #ct-zalo');
+  if (floatBtn) track('contact_click', { contact_method: floatBtn.id === 'ct-call' ? 'call' : 'zalo' });
+  const contactLink = !floatBtn && e.target.closest('a[href^="tel:"], a[href*="zalo.me/"], a[href^="mailto:"]');
   if (contactLink) {
     const href = contactLink.getAttribute('href');
     const where = contactLink.closest('.sticky-bar') ? 'sticky_bar' : contactLink.closest('.q-box') ? 'quote_popup' : contactLink.closest('footer') ? 'footer' : 'page';

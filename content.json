@@ -280,6 +280,7 @@
     "applications": "Xử lý nước, nước thải\nXử lý khí thải, mùi, VOC\nDầu khí, hóa dầu\nVàng, kim loại quý\nThực phẩm, đồ uống\nKhác",
     "volumes": "Dưới 1 tấn\n1 – 5 tấn\n5 – 20 tấn\nTrên 20 tấn\nChưa xác định",
     "needPlaceholder": "Loại than, ứng dụng, số lượng dự kiến…",
+    "floatButtons": true,
     "stickyBar": true,
     "buttonLabel": "Gửi thông tin",
     "successTitle": "Đã gửi thông tin!",
